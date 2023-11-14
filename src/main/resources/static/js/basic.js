@@ -98,6 +98,52 @@ function addHTML(itemDto) {
     </div>`
 }
 
+function isValid(name, value, min, max) {
+    if (value.trim().length < min) {
+        alert(name + '을 공백 포함' + min + '자 이상로 입력해주세요');
+        return false;
+    }
+    if (value.trim().length > max) {
+        alert(name + '을 공백 포함' + max + '자 이하로 입력해주세요');
+        return false;
+    }
+    return true;
+}
+
+function openclose() {
+    $('#myinputbox').toggle();
+}
+
+function saveTodo() {
+    let title = $('#title').val();
+    let contents = $('#contents').val();
+
+    // 2. 작성한 내용이 올바른지 isValidContents 함수를 통해 확인합니다.
+    if (!isValid("내용", contents, 1, 100) || !isValid("제목", title, 1, 20)) {
+        return;
+    }
+    let data = {
+        'title': title,
+        'contents': contents
+    };
+
+    $.ajax({
+            type: 'POST',
+            url: '/api/post',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert('게시글이 성공적으로 작성되었습니다.');
+                console.log(response);
+                window.location.reload();
+            },
+            error(error, status, request) {
+                console.log(error);
+            }
+        }
+    );
+}
+
 function addProduct(itemDto) {
     /**
      * modal 뜨게 하는 법: $('#container').addClass('active');
@@ -106,7 +152,7 @@ function addProduct(itemDto) {
      * 2. data: JSON.stringify(itemDto),
      */
 
-    // 1. POST /api/products 에 관심 상품 생성 요청
+    // 1. POST /api/post 에 관심 상품 생성 요청
     $.ajax({
         type: 'POST',
         url: '/api/products',
