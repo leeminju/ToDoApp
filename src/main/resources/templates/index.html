@@ -19,46 +19,95 @@
 <body>
 
 <div class="header" style="position:relative;">
-    <div id="header-title-select-shop">
+    <div id="header-title-todolist">
         To Do List
     </div>
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
-    <div class="col">
-        <div class="card" style="width: 18rem;">
-            <div class="card-header">
-                이민주
-            </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">밥먹기</li>
-                <li class="list-group-item">TIL</li>
-                <li class="list-group-item">운동하기</li>
-            </ul>
-            <div id="myinputbox">
-                <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="title" placeholder="제목">
-                    <label for="floatingInput">제목</label>
+<div class="mycards">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header" id="username">
+                    이민주
                 </div>
-                <div class="mb-3">
-                    <textarea class="form-control" id="contents" placeholder="내용" rows="10"></textarea>
+                <ul class="list-group list-group-flush" id="myToDoList">
+                </ul>
+                <div id="myinputbox">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="title" placeholder="제목">
+                        <label for="floatingInput">제목</label>
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" id="contents" placeholder="내용" rows="3"></textarea>
+                    </div>
+                    <button onclick="saveTodo()">+Add a card</button>
                 </div>
-                <button onclick="saveTodo()">+Add a card</button>
+                <button onclick="openclose()">+Add a card</button>
             </div>
-            <button onclick="openclose()">+Add a card</button>
         </div>
-    </div>
 
-    <div class="col">
-        <div class="card" style="width: 18rem;">
-            <div class="card-header">
-                김용희
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    김용희
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">밥먹기</li>
+                    <li class="list-group-item">노래연습하기</li>
+                    <li class="list-group-item">운동하기</li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">밥먹기</li>
-                <li class="list-group-item">노래연습하기</li>
-                <li class="list-group-item">운동하기</li>
-            </ul>
+        </div>
+
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    이병곤
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">밥먹기</li>
+                    <li class="list-group-item">노래연습하기</li>
+                    <li class="list-group-item">운동하기</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    배진영
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">밥먹기</li>
+                    <li class="list-group-item">노래연습하기</li>
+                    <li class="list-group-item">운동하기</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    김승훈
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">밥먹기</li>
+                    <li class="list-group-item">노래연습하기</li>
+                    <li class="list-group-item">운동하기</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    윤현석
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">밥먹기</li>
+                    <li class="list-group-item">노래연습하기</li>
+                    <li class="list-group-item">운동하기</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>

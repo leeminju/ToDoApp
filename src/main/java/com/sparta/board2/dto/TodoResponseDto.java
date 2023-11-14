@@ -1,9 +1,12 @@
 package com.sparta.board2.dto;
 
 import com.sparta.board2.entity.Todo;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class TodoResponseDto {
     private Long id;
     private String title;
@@ -18,5 +21,6 @@ public class TodoResponseDto {
         this.contents=todo.getContents();
         this.createdAt=todo.getCreatedAt();
         this.modifiedAt=todo.getModifiedAt();
+        this.username = null;
     }
 }
