@@ -9,9 +9,13 @@ body {
 .mycards {
     margin: 50px;
 }
+.checkbox{
+    width: 100px;
+    margin: 10px;
+}
 
-.myinputbox {
-    padding: 10px;
+#myinputbox {
+    margin: 10px auto 10px auto;
     display: none;
 }
 

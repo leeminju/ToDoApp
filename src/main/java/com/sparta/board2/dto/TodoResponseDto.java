@@ -14,13 +14,15 @@ public class TodoResponseDto {
     private String contents;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private boolean finished;
 
     public TodoResponseDto(Todo todo) {
-        this.id=todo.getId();
-        this.title=todo.getTitle();
-        this.contents=todo.getContents();
-        this.createdAt=todo.getCreatedAt();
-        this.modifiedAt=todo.getModifiedAt();
+        this.id = todo.getId();
+        this.title = todo.getTitle();
+        this.contents = todo.getContents();
+        this.createdAt = todo.getCreatedAt();
+        this.modifiedAt = todo.getModifiedAt();
+        this.finished = todo.isFinished();
         this.username = null;
     }
 }
