@@ -2,9 +2,54 @@ const host = 'http://' + window.location.host;
 let targetId;
 
 $(document).ready(function () {
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            jqXHR.setRequestHeader('Authorization', auth);
+        });
+    } else {
+        window.location.href = host + '/api/user/login-page';
+        return;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: `/api/user-info`,
+        contentType: 'application/json',
+    })
+        .done(function (res, status, xhr) {
+            const username = res;
+
+            if (!username) {
+                window.location.href = '/api/user/login-page';
+                return;
+            }
+
+            $('#username').text(username);
+            $('#login_username').text(username);
+        })
+        .fail(function (jqXHR, textStatus) {
+            logout();
+        });
+
     showMyTodoList();
 })
+function logout() {
+    // 토큰 삭제
+    Cookies.remove('Authorization', {path: '/'});
+    window.location.href = host + '/api/user/login-page';
+}
 
+function getToken() {
+    let auth = Cookies.get('Authorization');
+
+    if (auth === undefined) {
+        return '';
+    }
+
+    return auth;
+}
 
 function isValid(name, value, min, max) {
     if (value.trim().length < min) {
@@ -67,10 +112,10 @@ function showMyTodoList(isAdmin = false) {
                 let finished = todo['finished'];
 
                 let tempHtml;
-                if(!finished) {
+                if (!finished) {
                     tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
                     data-bs-toggle="modal" data-bs-target="#TodoModal">${title}</li>`;
-                }else{
+                } else {
                     tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
                     data-bs-toggle="modal" data-bs-target="#TodoModal"
                     style="text-decoration-line: line-through">
@@ -144,9 +189,11 @@ function updateTodo() {
         }
     );
 }
-function win_close(){
-      window.location.reload();
+
+function win_close() {
+    window.location.reload();
 }
+
 function updatefinished() {
     let id = $('#update_btn').val();
     let finished = $('#finished').is(":checked");

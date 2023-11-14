@@ -24,9 +24,15 @@
 <body>
 
 <div class="header" style="position:relative;">
-    <div id="header-title-todolist">
-        To Do List
+    <div id="header-title-login-user">
+        <span id="username"></span> 님의
     </div>
+    <div id="header-title-todolist">
+        To do List
+    </div>
+    <a id="login-text" href="javascript:logout()">
+        로그아웃
+    </a>
 </div>
 
 <!-- Modal -->
@@ -35,7 +41,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="response_title">제목</h1>
-                <button onclick="win_close()" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button onclick="win_close()" type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
             </div>
             <div class="checkbox">
                 <input onclick="updatefinished()" class="form-check-input" type="checkbox" value="" id="finished">
@@ -48,7 +55,8 @@
 
             <textarea class="form-control" id="response_contents" placeholder="내용" rows="3" disabled></textarea>
             <div class="modal-footer">
-                <button onclick="win_close()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button onclick="win_close()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                </button>
                 <button class="btn btn-primary" data-bs-target="#EditModal" data-bs-toggle="modal">Edit</button>
             </div>
         </div>
@@ -68,7 +76,8 @@
             <div class="modal-footer">
                 <button class="btn btn-primary" data-bs-target="#TodoModal" data-bs-toggle="modal">Back</button>
                 <button id="update_btn" class="btn btn-danger" onclick="updateTodo()">Save</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="win_close()">Close</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="win_close()">Close
+                </button>
             </div>
         </div>
     </div>
