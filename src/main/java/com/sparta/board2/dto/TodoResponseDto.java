@@ -23,6 +23,6 @@ public class TodoResponseDto {
         this.createdAt = todo.getCreatedAt();
         this.modifiedAt = todo.getModifiedAt();
         this.finished = todo.isFinished();
-        this.username = null;
+        this.username = todo.getUser().getUsername();
     }
 }

@@ -5,10 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,10 +25,15 @@ public class Todo extends Timestamped {
     @Column
     private boolean finished;
 
-    public Todo(TodoRequestDto requestDto) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username", nullable = false)
+    private User user;
+
+    public Todo(TodoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
-        finished = false;
+        this.user = user;
+        this.finished = false;
     }
 
     public void update(TodoRequestDto requestDto) {

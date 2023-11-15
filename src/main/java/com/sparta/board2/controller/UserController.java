@@ -58,4 +58,10 @@ public class UserController {
         String username = userDetails.getUser().getUsername();
         return username;
     }
+
+    @GetMapping("/users")
+    @ResponseBody
+    public List<String> getAllUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.getAllUsername(userDetails.getUser());
+    }
 }

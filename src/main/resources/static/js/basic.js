@@ -1,5 +1,6 @@
 const host = 'http://' + window.location.host;
 let targetId;
+let login_user;
 
 $(document).ready(function () {
     const auth = getToken();
@@ -28,13 +29,17 @@ $(document).ready(function () {
 
             $('#username').text(username);
             $('#login_username').text(username);
+            login_user = username;
         })
         .fail(function (jqXHR, textStatus) {
             logout();
         });
 
+
     showMyTodoList();
+    addCard();
 })
+
 function logout() {
     // 토큰 삭제
     Cookies.remove('Authorization', {path: '/'});
@@ -97,7 +102,75 @@ function saveTodo() {
     );
 }
 
-function showMyTodoList(isAdmin = false) {
+function addCard() {
+    $.ajax({
+        type: 'GET',
+        url: '/api/users',
+        contentType: 'application/json',
+        success: function (response) {
+            for (let i = 0; i < response.length; i++) {
+                let username = response[i];
+                let tempHtml =
+                    `<div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-header">
+                                ${username}
+                             <ul id="${username}-list" class="list-group list-group-flush">
+                             </ul>
+                            </div>
+                        </div>
+                    </div>`;
+
+                $('#card').append(tempHtml);
+                showTodoList(username);
+            }
+        },
+        error(error, status, request) {
+            console.log(error);
+        }
+    });
+}
+
+function showTodoList(username) {
+    $.ajax({
+        type: 'GET',
+        url: `api/posts/${username}`,
+        contentType: 'application/json',
+        success: function (response) {
+            let input_id = '#' + username + "-list";
+            $(input_id).empty();
+
+            if (response.length == 0)
+                return;
+
+            for (let i = 0; i < response.length; i++) {
+                let todo = response[i];
+                let id = todo['id'];
+                let title = todo['title'];
+                let finished = todo['finished'];
+
+                let tempHtml;
+
+                if (!finished) {
+                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
+                    data-bs-toggle="modal" data-bs-target="#TodoModal">${title}</li>`;
+                } else {
+                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
+                    data-bs-toggle="modal" data-bs-target="#TodoModal"
+                    style="text-decoration-line: line-through">
+                    ${title}</li>`;
+                }
+                $(input_id).append(tempHtml);
+            }
+
+        },
+        error(error, status, request) {
+            console.log(error);
+        }
+    });
+}
+
+function showMyTodoList() {
     $.ajax({
         type: 'GET',
         url: '/api/posts',
@@ -146,14 +219,27 @@ function showDetails(id) {
             contents = contents.replaceAll("<br>", "\r\n");
 
             $('#response_title').text(title);
-            $('#edit_title').val(title);
             $('#response_contents').text(contents);
-            $('#edit_contents').val(contents);
             $('#response_username').text(username);
             $('#response_modifiedAt').text(modifiedAt);
+
             $('#update_btn').val(id);
 
+            $('#edit_title').val(title);
+            $('#edit_contents').val(contents);
+
             $('#finished').prop('checked', finished);
+
+            console.log(login_user);
+            console.log(username);
+
+            if (login_user != username) {
+                $('#edit_btn').css("display", "none");
+                $('#finished').prop('disabled', true);
+            } else {
+                $('#edit_btn').css("display", "block");
+                $('#finished').prop('disabled', false);
+            }
         }
     })
 }

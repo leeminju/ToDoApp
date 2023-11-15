@@ -50,14 +50,15 @@
                     finished
                 </label>
             </div>
-            <div id="response_modifiedAt">작성일</div>
-            <div id="response_username">이름</div>
-
+            <div class="info">
+                <span class="writer" id="response_username">minju</span>
+                <span id="response_modifiedAt">작성일</span>
+            </div>
             <textarea class="form-control" id="response_contents" placeholder="내용" rows="3" disabled></textarea>
             <div class="modal-footer">
                 <button onclick="win_close()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
                 </button>
-                <button class="btn btn-primary" data-bs-target="#EditModal" data-bs-toggle="modal">Edit</button>
+                <button id="edit_btn" class="btn btn-primary" data-bs-target="#EditModal" data-bs-toggle="modal">Edit</button>
             </div>
         </div>
     </div>
@@ -83,8 +84,8 @@
     </div>
 </div>
 
-<div class="mycards">
-    <div class="row row-cols-1 row-cols-md-4 g-4">
+<div class="mycards" >
+    <div  id="card" class="row row-cols-1 row-cols-md-4 g-4">
         <div class="col">
             <div class="card" style="width: 20rem;">
                 <div class="card-header" id="login_username">
@@ -103,69 +104,6 @@
                     <button class="btn btn-primary" onclick="saveTodo()">추가</button>
                 </div>
                 <button onclick="openclose()">+Add a card</button>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    김용희
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">밥먹기</li>
-                    <li class="list-group-item">노래연습하기</li>
-                    <li class="list-group-item">운동하기</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card" style="width: 20rem;">
-                <div class="card-header">
-                    이병곤
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">밥먹기</li>
-                    <li class="list-group-item">노래연습하기</li>
-                    <li class="list-group-item">운동하기</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="col">
-            <div class="card" style="width: 20rem;">
-                <div class="card-header">
-                    배진영
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">밥먹기</li>
-                    <li class="list-group-item">노래연습하기</li>
-                    <li class="list-group-item">운동하기</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    김승훈
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">밥먹기</li>
-                    <li class="list-group-item">노래연습하기</li>
-                    <li class="list-group-item">운동하기</li>
-                </ul>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 20rem;">
-                <div class="card-header">
-                    윤현석
-                </div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">밥먹기</li>
-                    <li class="list-group-item">노래연습하기</li>
-                    <li class="list-group-item">운동하기</li>
-                </ul>
             </div>
         </div>
     </div>
