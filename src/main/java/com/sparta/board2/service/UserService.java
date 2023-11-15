@@ -27,27 +27,16 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findById(username);
         if (checkUsername.isPresent()) {
-            ArrayList<String> message = new ArrayList<>();
-            message.add("회원가입 실패 " + HttpStatus.BAD_REQUEST.value() + " " + HttpStatus.BAD_REQUEST.getReasonPhrase());
-            message.add("중복된 사용자가 존재합니다");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+            ArrayList<String> msg = new ArrayList<>();
+            msg.add("중복된 username 입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(msg);
         }
 
         // 사용자 등록
         User user = new User(username, password);
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공 " + HttpStatus.OK.value() + " " + HttpStatus.OK.getReasonPhrase());
+        return ResponseEntity.status(HttpStatus.OK).body("회원가입 성공 ");
     }
 
-    public List<String> getAllUsername(User login_user) {
-        List<User> users = userRepository.findAllByOrderByUsername();//이름순으로
-        List<String> usernameList = new ArrayList<>();
-
-        for (User user : users) {
-            if (!login_user.getUsername().equals(user.getUsername()))
-                usernameList.add(user.getUsername());
-        }
-        return usernameList;//나를 제외한 다른 사용자 리스트 가져옴
-    }
 }

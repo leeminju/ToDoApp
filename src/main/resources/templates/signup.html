@@ -31,7 +31,6 @@
                         window.location.href='/api/user/login-page';
                     },
                     error(error, status, request) {
-                        console.log(error);
                         let state= error['status'];
                         let message = error['responseJSON']
 

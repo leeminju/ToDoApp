@@ -35,9 +35,7 @@ $(document).ready(function () {
             logout();
         });
 
-
-    showMyTodoList();
-    addCard();
+    addMemberCard();
 })
 
 function logout() {
@@ -56,30 +54,12 @@ function getToken() {
     return auth;
 }
 
-function isValid(name, value, min, max) {
-    if (value.trim().length < min) {
-        alert(name + '을 공백 포함' + min + '자 이상로 입력해주세요');
-        return false;
-    }
-    if (value.trim().length > max) {
-        alert(name + '을 공백 포함' + max + '자 이하로 입력해주세요');
-        return false;
-    }
-    return true;
-}
 
-function openclose() {
-    $('#myinputbox').toggle();
-}
+function saveTodo(value) {
+    let title = $('#' + value + '-title').val();
+    let contents = $('#' + value + '-contents').val().replace("\r\b", "<br>");
 
-function saveTodo() {
-    let title = $('#title').val();
-    let contents = $('#contents').val().replace("\r\b", "<br>");
 
-    // 2. 작성한 내용이 올바른지 isValidContents 함수를 통해 확인합니다.
-    if (!isValid("내용", contents, 1, 100) || !isValid("제목", title, 1, 20)) {
-        return;
-    }
     let data = {
         'title': title,
         'contents': contents
@@ -96,105 +76,50 @@ function saveTodo() {
                 window.location.reload();
             },
             error(error, status, request) {
-                console.log(error);
+                alert(request['responseText']);
             }
         }
     );
 }
 
-function addCard() {
-    $.ajax({
-        type: 'GET',
-        url: '/api/users',
-        contentType: 'application/json',
-        success: function (response) {
-            for (let i = 0; i < response.length; i++) {
-                let username = response[i];
-                let tempHtml =
-                    `<div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-header">
-                                ${username}
-                             <ul id="${username}-list" class="list-group list-group-flush">
-                             </ul>
-                            </div>
-                        </div>
-                    </div>`;
-
-                $('#card').append(tempHtml);
-                showTodoList(username);
-            }
-        },
-        error(error, status, request) {
-            console.log(error);
-        }
-    });
-}
-
-function showTodoList(username) {
-    $.ajax({
-        type: 'GET',
-        url: `api/posts/${username}`,
-        contentType: 'application/json',
-        success: function (response) {
-            let input_id = '#' + username + "-list";
-            $(input_id).empty();
-
-            if (response.length == 0)
-                return;
-
-            for (let i = 0; i < response.length; i++) {
-                let todo = response[i];
-                let id = todo['id'];
-                let title = todo['title'];
-                let finished = todo['finished'];
-
-                let tempHtml;
-
-                if (!finished) {
-                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
-                    data-bs-toggle="modal" data-bs-target="#TodoModal">${title}</li>`;
-                } else {
-                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
-                    data-bs-toggle="modal" data-bs-target="#TodoModal"
-                    style="text-decoration-line: line-through">
-                    ${title}</li>`;
-                }
-                $(input_id).append(tempHtml);
-            }
-
-        },
-        error(error, status, request) {
-            console.log(error);
-        }
-    });
-}
-
-function showMyTodoList() {
+function addMemberCard() {
     $.ajax({
         type: 'GET',
         url: '/api/posts',
         contentType: 'application/json',
         success: function (response) {
-            $('#myToDoList').empty();
+            var keys = Object.keys(response); //키를 가져옵니다. 이때, keys 는 반복가능한 객체가 됩니다.
+            console.log(keys.length);
 
-            for (let i = 0; i < response.length; i++) {
-                let todo = response[i];
-                let id = todo['id'];
-                let title = todo['title'];
-                let finished = todo['finished'];
+            for (var i = 0; i < keys.length; i++) {
+                var username = keys[i];
 
-                let tempHtml;
-                if (!finished) {
-                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
-                    data-bs-toggle="modal" data-bs-target="#TodoModal">${title}</li>`;
-                } else {
-                    tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
-                    data-bs-toggle="modal" data-bs-target="#TodoModal"
-                    style="text-decoration-line: line-through">
-                    ${title}</li>`;
+                let todolist = response[username];
+
+                let temp = `<div class="col">
+                <div class="card" style="width: 20rem;">
+                    <div class="card-header" id="login_username">
+                    ${username}
+                    </div>
+                    <ul class="list-group list-group-flush" id=${username}-list>
+                    </ul>          
+                    <div id="${username}-box" class="input-box" style="display: none">
+                         <input type="text" class="form-control" id="${username}-title" placeholder="제목">  
+                         <div class="mb-3">
+                         <textarea class="form-control" id="${username}-contents" placeholder="내용" rows="3"></textarea>
+                        </div>
+                        <button class="btn btn-primary"  value="${username}" onclick="saveTodo(this.value)">추가</button>
+                   </div>              
+                    <button id="${username}-add_btn" value="${username}" onclick="toggle_control(this.value)">+ Add TO DO</button>                 
+                </div></div>`;
+
+                $('#card').append(temp);
+
+                if (login_user != username) {
+                    let btn_id = '#' + username + '-add_btn';
+                    $(btn_id).attr("disabled", true);
                 }
-                $('#myToDoList').append(tempHtml);
+                addTodoList(username, todolist);
             }
         },
         error(error, status, request) {
@@ -202,6 +127,39 @@ function showMyTodoList() {
         }
     });
 }
+
+function toggle_control(value) {
+    let box_id = '#' + value + '-box';
+    $(box_id).toggle();
+}
+
+
+function addTodoList(username, todolist) {
+    let list_name = "#" + username + "-list";
+    $(list_name).empty();
+
+    for (i = 0; i < todolist.length; i++) {
+        let todo = todolist[i];
+
+
+        let id = todo['id'];
+        let title = todo['title'];
+        let finished = todo['finished'];
+
+        let tempHtml;
+        if (!finished) {
+            tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
+                    data-bs-toggle="modal" data-bs-target="#TodoModal">${title}</li>`;
+        } else {
+            tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
+                    data-bs-toggle="modal" data-bs-target="#TodoModal"
+                    style="text-decoration-line: line-through">${title}</li>`;
+        }
+
+        $(list_name).append(tempHtml);
+    }
+}
+
 
 function showDetails(id) {
     $.ajax({
@@ -223,23 +181,13 @@ function showDetails(id) {
             $('#response_username').text(username);
             $('#response_modifiedAt').text(modifiedAt);
 
+            $('#delete_btn').val(id);
             $('#update_btn').val(id);
 
             $('#edit_title').val(title);
             $('#edit_contents').val(contents);
 
             $('#finished').prop('checked', finished);
-
-            console.log(login_user);
-            console.log(username);
-
-            if (login_user != username) {
-                $('#edit_btn').css("display", "none");
-                $('#finished').prop('disabled', true);
-            } else {
-                $('#edit_btn').css("display", "block");
-                $('#finished').prop('disabled', false);
-            }
         }
     })
 }
@@ -250,10 +198,6 @@ function updateTodo() {
     let title = $('#edit_title').val();
     let contents = $('#edit_contents').val().replace("\r\b", "<br>");
 
-    // 2. 작성한 내용이 올바른지 isValidContents 함수를 통해 확인합니다.
-    if (!isValid("내용", contents, 1, 100) || !isValid("제목", title, 1, 20)) {
-        return;
-    }
     let data = {
         'title': title,
         'contents': contents,
@@ -266,17 +210,34 @@ function updateTodo() {
             data: JSON.stringify(data),
             success: function (response) {
                 alert('성공적으로 수정되었습니다.');
-                console.log(response);
-
+                win_reload();
             },
             error(error, status, request) {
-                console.log(error);
+                alert(error['responseText']);
             }
         }
     );
 }
 
-function win_close() {
+function deleteTodo() {
+    let id = $('#delete_btn').val();
+
+    $.ajax({
+            type: 'DELETE',
+            url: `/api/post/${id}`,
+            contentType: 'application/json',
+            success: function (response) {
+                alert('성공적으로 삭제되었습니다.');
+                win_reload();
+            },
+            error(error, status, request) {
+                alert(error['responseText']);
+            }
+        }
+    );
+}
+
+function win_reload() {
     window.location.reload();
 }
 
@@ -291,7 +252,8 @@ function updatefinished() {
             success: function (response) {
             },
             error(error, status, request) {
-                console.log(error);
+                alert(error['responseText']);
+                $('#finished').prop("checked",!finished);
             }
         }
     );

@@ -42,7 +42,6 @@ public class UserController {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
             ArrayList<String> message = new ArrayList<>();
-            message.add("회원가입 실패 " + HttpStatus.BAD_REQUEST.value() + " " + HttpStatus.BAD_REQUEST.getReasonPhrase());
 
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 message.add(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
@@ -63,11 +62,5 @@ public class UserController {
     public String getUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         String username = userDetails.getUser().getUsername();
         return username;
-    }
-
-    @GetMapping("/users")
-    @ResponseBody
-    public List<String> getAllUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.getAllUsername(userDetails.getUser());
     }
 }

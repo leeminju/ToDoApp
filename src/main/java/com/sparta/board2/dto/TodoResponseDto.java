@@ -2,7 +2,6 @@ package com.sparta.board2.dto;
 
 import com.sparta.board2.entity.Todo;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 

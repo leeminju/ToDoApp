@@ -20,10 +20,15 @@ body {
     margin: 10px;
 }
 
-#myinputbox {
-    margin: 10px auto 10px auto;
+.input-box {
+    margin: 5px;
+    padding: 5px;
     display: none;
 }
+.mb-3{
+    margin-top: 5px;
+}
+
 
 .header {
     height: 100px;

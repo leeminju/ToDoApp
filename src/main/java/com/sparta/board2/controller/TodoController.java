@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,18 +21,13 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping("/post")
-    public TodoResponseDto createTodo(@RequestBody TodoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<TodoResponseDto> createTodo(@RequestBody TodoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return todoService.createTodo(requestDto, userDetails.getUser());
     }
 
     @GetMapping("/posts")
-    public List<TodoResponseDto> getMyTodoList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return todoService.getMyTodoList(userDetails.getUser());
-    }
-
-    @GetMapping("/posts/{username}")
-    public List<TodoResponseDto> getTodoList(@PathVariable String username) {
-        return todoService.getTodoList(username);
+    public Map<String, List<TodoResponseDto>> getTodoList() {
+        return todoService.getTodoList();
     }
 
     @GetMapping("/post/{id}")
@@ -39,12 +36,17 @@ public class TodoController {
     }
 
     @PutMapping("/post/{id}")
-    public TodoResponseDto updateTodo(@PathVariable Long id, @RequestBody TodoRequestDto requestDto) {
-        return todoService.updateTodo(id, requestDto);
+    public ResponseEntity<?> updateTodo(@PathVariable Long id, @RequestBody TodoRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoService.updateTodo(id, requestDto, userDetails.getUser());
+    }
+
+    @DeleteMapping("/post/{id}")
+    public ResponseEntity<?> deleteTodo(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoService.deleteTodo(id, userDetails.getUser());
     }
 
     @PutMapping("/post/{id}/{finished}")
-    public ResponseEntity<?> updatefinished(@PathVariable Long id, @PathVariable boolean finished) {
-        return todoService.updatefinished(id, finished);
+    public ResponseEntity<?> updatefinished(@PathVariable Long id, @PathVariable boolean finished,  @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return todoService.updatefinished(id, finished,userDetails.getUser());
     }
 }
