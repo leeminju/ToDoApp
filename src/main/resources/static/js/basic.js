@@ -72,7 +72,6 @@ function saveTodo(value) {
             data: JSON.stringify(data),
             success: function (response) {
                 alert('할일이 성공적으로 작성되었습니다.');
-                console.log(response);
                 window.location.reload();
             },
             error(error, status, request) {
@@ -89,7 +88,6 @@ function addMemberCard() {
         contentType: 'application/json',
         success: function (response) {
             var keys = Object.keys(response); //키를 가져옵니다. 이때, keys 는 반복가능한 객체가 됩니다.
-            console.log(keys.length);
 
             for (var i = 0; i < keys.length; i++) {
                 var username = keys[i];
@@ -115,7 +113,7 @@ function addMemberCard() {
 
                 $('#card').append(temp);
 
-                if (login_user != username) {
+                if (login_user !== username) {
                     let btn_id = '#' + username + '-add_btn';
                     $(btn_id).attr("disabled", true);
                 }
@@ -190,6 +188,8 @@ function showDetails(id) {
             $('#finished').prop('checked', finished);
         }
     })
+
+    showComment(id);
 }
 
 function updateTodo() {
@@ -253,8 +253,70 @@ function updatefinished() {
             },
             error(error, status, request) {
                 alert(error['responseText']);
-                $('#finished').prop("checked",!finished);
+                $('#finished').prop("checked", !finished);
             }
         }
     );
+}
+
+function create_Comment() {
+
+    let id = $('#delete_btn').val();
+
+    let comment = $('#comment_text').val();
+
+    console.log(id+" "+comment);
+
+    let data = {"comment": comment};
+
+    $.ajax({
+            type: 'POST',
+            url: `/api/comment/${id}`,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert("댓글이 작성되었습니다.");
+            },
+            error(error, status, request) {
+                alert(request['responseText']);
+            }
+        }
+    );
+}
+
+function showComment(id) {
+    $.ajax({
+        type: 'GET',
+        url: `/api/comment/${id}`,
+        success: function (response) {
+            $('#comment-card').empty();
+
+            for (var i = 0; i < response.length; i++) {
+                let comment = response[i];
+
+                let comment_id = comment['id'];
+                //let createAt = comment['createdAt'];
+                let modifiedAt = comment['modifiedAt'];
+                let username = comment['username'];
+                let content = comment['comment'].replaceAll("<br>", "\r\n");
+
+                let tempHTML = `<div class="card mb-4">
+                                <div class="card-body">
+                                    <p>${content}</p>
+                                    <div class="d-flex justify-content-between">
+                                        <div class="d-flex flex-row align-items-center">                                        
+                                            <p class="small mb-0 ms-2">${username}</p>
+                                        </div>
+                                        <div class="d-flex flex-row align-items-center">
+                                            <p class="small text-muted mb-0">${modifiedAt}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                $('#comment-card').append(tempHTML);
+            }
+        }
+    })
+
 }
