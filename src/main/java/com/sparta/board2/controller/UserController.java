@@ -41,16 +41,17 @@ public class UserController {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
-            ArrayList<String> message=new ArrayList<>();
+            ArrayList<String> message = new ArrayList<>();
+            message.add("회원가입 실패 " + HttpStatus.BAD_REQUEST.value() + " " + HttpStatus.BAD_REQUEST.getReasonPhrase());
+
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                 message.add(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+                message.add(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
 
-        userService.signup(requestDto);
 
         return userService.signup(requestDto);
 

@@ -8,12 +8,14 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -42,16 +44,22 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
 
-        String token = jwtUtil.createToken(username);
-        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+        String token = jwtUtil.createToken(username);//토큰 생성
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);//발급한 토큰을 Header에 추가
+
+        response.setStatus(HttpStatus.OK.value());
+        PrintWriter writer = response.getWriter();
+        writer.println("login success " + response.getStatus() + "  " + HttpStatus.OK.getReasonPhrase());
     }
 
     @Override
-    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) {
-        response.setStatus(401);//추가적으로 다른 것 보내도됨!
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());//추가적으로 다른 것 보내도됨!
+        PrintWriter writer = response.getWriter();
+        writer.println("login fail " + response.getStatus() + " " + HttpStatus.UNAUTHORIZED.getReasonPhrase());
     }
 }
 
