@@ -50,16 +50,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = jwtUtil.createToken(username);//토큰 생성
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);//발급한 토큰을 Header에 추가
 
-        response.setStatus(HttpStatus.OK.value());
+        response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter writer = response.getWriter();
-        writer.println("login success " + response.getStatus() + "  " + HttpStatus.OK.getReasonPhrase());
+        writer.println("login success " + response.getStatus());
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());//추가적으로 다른 것 보내도됨!
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);//추가적으로 다른 것 보내도됨!
         PrintWriter writer = response.getWriter();
-        writer.println("login fail " + response.getStatus() + " " + HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        writer.println("login fail " + response.getStatus());
     }
 }
 
