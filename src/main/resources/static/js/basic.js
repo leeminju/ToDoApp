@@ -263,7 +263,7 @@ function create_Comment() {
 
     let id = $('#delete_btn').val();
 
-    let contents = $('#comment_text').val();
+    let contents = $('#comment_text').val().replace("\r\b", "<br>");
 
     let data = {"contents": contents};
 
@@ -300,14 +300,24 @@ function showComment(id) {
 
                 let tempHTML = `<div class="card mb-4">
                                 <div class="card-body">
-                                    <p>${contents}</p>
+                                    <div class="comment_text">
+                                        ${contents}
+                                    </div>
+                                    <div id="${comment_id}-editarea" class="edit_area">
+                                        <textarea id="${comment_id}-textarea" placeholder="댓글 내용" class="edit_textarea" name="" id="" rows="2">${contents}</textarea>
+                                    </div>
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex flex-row align-items-center">                                        
                                             <p class="small mb-0 ms-2">${username}</p>
                                         </div>
                                         <div class="d-flex flex-row align-items-center">
                                             <p class="small text-muted mb-0">${modifiedAt}</p>
-                                        </div>
+                                        </div>    
+                                    </div>
+                                    <div class="footer">
+                                            <img id="${comment_id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editComment('${comment_id}')">
+                                            <img id="${comment_id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="delete_Comment('${comment_id}')">
+                                            <img id="${comment_id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${comment_id}')">
                                     </div>
                                 </div>
                             </div>`;
@@ -316,5 +326,40 @@ function showComment(id) {
             }
         }
     })
+}
 
+function editComment(id) {
+    showEdits(id);
+}
+
+function showEdits(id) {
+    $(`#${id}-editarea`).show();
+    $(`#${id}-submit`).show();
+    $(`#${id}-delete`).show();
+
+    $(`#${id}-contents`).hide();
+    $(`#${id}-edit`).hide();
+}
+function delete_Comment(id){
+    //삭제 API 호출
+}
+function submitEdit(id){
+
+      let contents = $(`#${id}-textarea`).val().replaceAll("<br>", "\r\n");;
+
+      let data = {'contents': contents};
+
+      $.ajax({
+        type: "PUT",
+        url: `/api/comment/${id}`,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+          alert('댓글 수정 완료!')
+          window.location.reload();
+        },error(error, status, request) {
+                alert(error['responseText']);
+            }
+
+      });
 }

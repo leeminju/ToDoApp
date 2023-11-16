@@ -6,6 +6,37 @@ body {
     margin: 0px;
 }
 
+.form-outline {
+    padding: 10px;
+}
+
+#commentarea {
+    width: 100%;
+}
+
+.input_comment {
+    width: 100%;
+}
+
+.footer{
+    width: 50px;
+    margin-left: 90%;
+}
+.icon-end-edit {
+    display: none;
+}
+
+
+
+.edit_area {
+    display: none;
+    width: 100%;
+}
+
+.edit_textarea {
+    width: 100%;
+}
+
 .writer {
     margin-left: 10px;
     margin-right: 20px;
@@ -28,10 +59,6 @@ body {
 
 .mb-3 {
     margin-top: 5px;
-}
-
-#commentarea {
-    width: 90%;
 }
 
 

@@ -8,7 +8,10 @@ import com.sparta.board2.entity.User;
 import com.sparta.board2.repository.CommentRepository;
 import com.sparta.board2.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +46,32 @@ public class CommentService {
         }
 
         return responseDtoList;
+    }
+
+    @Transactional
+    public ResponseEntity<?> updateComment(Long comment_id, CommentRequestDto requestDto, User user) {
+        Comment comment = commentRepository.findById(comment_id).orElseThrow(
+                () -> new NullPointerException("해당 댓글 존재하지 않습니다")
+        );
+
+        if (!comment.getUser().getUsername().equals(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("댓글 작성자만 수정할 수 있습니다.");
+        }
+
+        comment.update(requestDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new CommentResponseDto(comment));
+    }
+
+    public ResponseEntity<?> deleteComment(Long comment_id, User user) {
+        Comment comment = commentRepository.findById(comment_id).orElseThrow(
+                () -> new NullPointerException("해당 댓글 존재하지 않습니다")
+        );
+
+        if (!comment.getUser().getUsername().equals(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("댓글 작성자만  삭제할 수 있습니다.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(comment_id+"번 댓글 삭제 성공");
     }
 }

@@ -6,6 +6,7 @@ import com.sparta.board2.dto.TodoRequestDto;
 import com.sparta.board2.security.UserDetailsImpl;
 import com.sparta.board2.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +29,13 @@ public class CommentController {
         return commentService.getComments(post_id);
     }
 
+    @PutMapping("/comment/{comment_id}")
+    public ResponseEntity<?> updateComment(@PathVariable Long comment_id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.updateComment(comment_id, requestDto, userDetails.getUser());
+    }
 
+    @DeleteMapping("/comment/{comment_id}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.deleteComment(comment_id, userDetails.getUser());
+    }
 }
