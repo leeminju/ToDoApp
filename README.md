@@ -9,7 +9,7 @@
     
 - **API 명세서 작성하기!**
     
-   https://documenter.getpostman.com/view/30859314/2s9YXo2Kvb  
+  https://documenter.getpostman.com/view/30859314/2s9YXpTxXk 
     
 **ERD 작성**
   https://www.erdcloud.com/d/FSLx8mZbgzq532WXr
