@@ -29,9 +29,9 @@ public class TodoService {
     }
 
     public Map<String, List<TodoResponseDto>> getTodoList() {
-        List<User> users = userRepository.findAllByOrderByUsername();
+        List<User> users = userRepository.findAllByOrderByUsername();//이름순으로 가져옴
 
-        Map<String, List<TodoResponseDto>> map = new TreeMap<>();
+        Map<String, List<TodoResponseDto>> map = new TreeMap<>();//TreeMap -  key값 오름차순 정렬을 위해서
 
 
         for (User user : users) {

@@ -17,7 +17,7 @@ public class Comment extends Timestamped {
     private Long id;
 
     @Column(nullable = false)
-    private String comment;
+    private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id", nullable = false)
@@ -28,7 +28,7 @@ public class Comment extends Timestamped {
     private User user;
 
     public Comment(CommentRequestDto requestDto, User user, Todo todo) {
-        this.comment = requestDto.getComment();
+        this.contents = requestDto.getContents();
         this.todo=todo;
         this.user=user;
     }

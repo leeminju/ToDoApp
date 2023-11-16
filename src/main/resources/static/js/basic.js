@@ -71,7 +71,7 @@ function saveTodo(value) {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert('할일이 성공적으로 작성되었습니다.');
+                alert('할일이 추가되었습니다.');
                 window.location.reload();
             },
             error(error, status, request) {
@@ -210,7 +210,7 @@ function updateTodo() {
             data: JSON.stringify(data),
             success: function (response) {
                 alert('성공적으로 수정되었습니다.');
-                win_reload();
+                window.location.reload();
             },
             error(error, status, request) {
                 alert(error['responseText']);
@@ -227,8 +227,8 @@ function deleteTodo() {
             url: `/api/post/${id}`,
             contentType: 'application/json',
             success: function (response) {
-                alert('성공적으로 삭제되었습니다.');
-                win_reload();
+                alert('할일이 삭제되었습니다.');
+                window.location.reload();
             },
             error(error, status, request) {
                 alert(error['responseText']);
@@ -263,11 +263,9 @@ function create_Comment() {
 
     let id = $('#delete_btn').val();
 
-    let comment = $('#comment_text').val();
+    let contents = $('#comment_text').val();
 
-    console.log(id+" "+comment);
-
-    let data = {"comment": comment};
+    let data = {"contents": contents};
 
     $.ajax({
             type: 'POST',
@@ -276,6 +274,7 @@ function create_Comment() {
             data: JSON.stringify(data),
             success: function (response) {
                 alert("댓글이 작성되었습니다.");
+                window.location.reload();
             },
             error(error, status, request) {
                 alert(request['responseText']);
@@ -295,14 +294,13 @@ function showComment(id) {
                 let comment = response[i];
 
                 let comment_id = comment['id'];
-                //let createAt = comment['createdAt'];
                 let modifiedAt = comment['modifiedAt'];
                 let username = comment['username'];
-                let content = comment['comment'].replaceAll("<br>", "\r\n");
+                let contents = comment['contents'].replaceAll("<br>", "\r\n");
 
                 let tempHTML = `<div class="card mb-4">
                                 <div class="card-body">
-                                    <p>${content}</p>
+                                    <p>${contents}</p>
                                     <div class="d-flex justify-content-between">
                                         <div class="d-flex flex-row align-items-center">                                        
                                             <p class="small mb-0 ms-2">${username}</p>

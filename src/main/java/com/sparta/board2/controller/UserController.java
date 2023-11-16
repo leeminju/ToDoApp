@@ -60,7 +60,6 @@ public class UserController {
     @GetMapping("/user-info")
     @ResponseBody
     public String getUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
-        return username;
+        return userDetails.getUser().getUsername();
     }
 }

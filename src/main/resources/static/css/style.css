@@ -6,7 +6,7 @@ body {
     margin: 0px;
 }
 
-.writer{
+.writer {
     margin-left: 10px;
     margin-right: 20px;
 }
@@ -25,13 +25,14 @@ body {
     padding: 5px;
     display: none;
 }
-.mb-3{
+
+.mb-3 {
     margin-top: 5px;
 }
-#commentarea{
+
+#commentarea {
     width: 90%;
 }
-
 
 
 .header {
@@ -234,4 +235,18 @@ body {
     /*the container must be positioned relative:*/
     position: relative;
     display: inline-block;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert {
+    width: 300px;
+    margin-top: 22px;
+    padding: 1.75rem 1.25rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
 }
