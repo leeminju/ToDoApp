@@ -38,7 +38,8 @@ public class CommentService {
         Todo todo = todoRepository.findById(post_id).orElseThrow(
                 () -> new NullPointerException("존재하지 않습니다")
         );
-        List<Comment> commentList = todo.getComment();
+
+        List<Comment> commentList = commentRepository.findByTodoOrderByCreatedAtDesc(todo);//댓글 작성일 기준 내림차순 정렬
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
@@ -71,6 +72,8 @@ public class CommentService {
         if (!comment.getUser().getUsername().equals(user.getUsername())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("댓글 작성자만  삭제할 수 있습니다.");
         }
+
+        commentRepository.delete(comment);
 
         return ResponseEntity.status(HttpStatus.OK).body(comment_id+"번 댓글 삭제 성공");
     }

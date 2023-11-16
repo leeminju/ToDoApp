@@ -75,7 +75,7 @@ function saveTodo(value) {
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(request['responseText']);
+                alert(error['responseText']);
             }
         }
     );
@@ -104,11 +104,11 @@ function addMemberCard() {
                     <div id="${username}-box" class="input-box" style="display: none">
                          <input type="text" class="form-control" id="${username}-title" placeholder="제목">  
                          <div class="mb-3">
-                         <textarea class="form-control" id="${username}-contents" placeholder="내용" rows="3"></textarea>
+                         <textarea class="form-control" id="${username}-contents" placeholder="내용" rows="2"></textarea>
                         </div>
-                        <button class="btn btn-primary"  value="${username}" onclick="saveTodo(this.value)">추가</button>
+                        <button id="addBtn" class="btn btn-primary"  value="${username}" onclick="saveTodo(this.value)">추가</button>
                    </div>              
-                    <button id="${username}-add_btn" value="${username}" onclick="toggle_control(this.value)">+ Add TO DO</button>                 
+                    <button id="${username}-add_btn" style="border: transparent" value="${username}" onclick="toggle_control(this.value)">+ Add TO DO</button>                 
                 </div></div>`;
 
                 $('#card').append(temp);
@@ -168,8 +168,8 @@ function showDetails(id) {
             let title = response['title'];
             let username = response['username'];
             let contents = response['contents'];
-            // let createdAt = response['createdAt'];
-            let modifiedAt = response['modifiedAt'];
+            let createdAt = response['createdAt'];
+            //let modifiedAt = response['modifiedAt'];
             var finished = response['finished'];
 
             contents = contents.replaceAll("<br>", "\r\n");
@@ -177,7 +177,7 @@ function showDetails(id) {
             $('#response_title').text(title);
             $('#response_contents').text(contents);
             $('#response_username').text(username);
-            $('#response_modifiedAt').text(modifiedAt);
+            $('#response_modifiedAt').text(createdAt);
 
             $('#delete_btn').val(id);
             $('#update_btn').val(id);
@@ -274,10 +274,10 @@ function create_Comment() {
             data: JSON.stringify(data),
             success: function (response) {
                 alert("댓글이 작성되었습니다.");
-                window.location.reload();
+                showComment(id);
             },
             error(error, status, request) {
-                alert(request['responseText']);
+                alert(error['responseText']);
             }
         }
     );
@@ -294,13 +294,13 @@ function showComment(id) {
                 let comment = response[i];
 
                 let comment_id = comment['id'];
-                let modifiedAt = comment['modifiedAt'];
+                let createdAt = comment['createdAt'];
                 let username = comment['username'];
                 let contents = comment['contents'].replaceAll("<br>", "\r\n");
 
                 let tempHTML = `<div class="card mb-4">
                                 <div class="card-body">
-                                    <div class="comment_text">
+                                    <div id="${comment_id}-text" class="comment_text">
                                         ${contents}
                                     </div>
                                     <div id="${comment_id}-editarea" class="edit_area">
@@ -311,13 +311,13 @@ function showComment(id) {
                                             <p class="small mb-0 ms-2">${username}</p>
                                         </div>
                                         <div class="d-flex flex-row align-items-center">
-                                            <p class="small text-muted mb-0">${modifiedAt}</p>
+                                            <p class="small text-muted mb-0">${createdAt}</p>
                                         </div>    
                                     </div>
                                     <div class="footer">
                                             <img id="${comment_id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editComment('${comment_id}')">
-                                            <img id="${comment_id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="delete_Comment('${comment_id}')">
-                                            <img id="${comment_id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${comment_id}')">
+                                            <img id="${comment_id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="delete_Comment('${comment_id}','${id}')">
+                                            <img id="${comment_id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${comment_id}','${id}')">
                                     </div>
                                 </div>
                             </div>`;
@@ -337,29 +337,47 @@ function showEdits(id) {
     $(`#${id}-submit`).show();
     $(`#${id}-delete`).show();
 
-    $(`#${id}-contents`).hide();
+    $(`#${id}-text`).hide();
     $(`#${id}-edit`).hide();
 }
-function delete_Comment(id){
+
+function delete_Comment(id, post_id) {
     //삭제 API 호출
+
+    $.ajax({
+        type: "DELETE",
+        url: `/api/comment/${id}`,
+        contentType: "application/json",
+        success: function (response) {
+            alert('댓글 삭제 완료!')
+            showComment(post_id);
+        }, error(error, status, request) {
+            alert(error['responseText']);
+        }
+
+    });
+
 }
-function submitEdit(id){
 
-      let contents = $(`#${id}-textarea`).val().replaceAll("<br>", "\r\n");;
+function submitEdit(id, post_id) {
 
-      let data = {'contents': contents};
+    let contents = $(`#${id}-textarea`).val().replaceAll("<br>", "\r\n");
 
-      $.ajax({
+    let data = {'contents': contents};
+
+    $.ajax({
         type: "PUT",
         url: `/api/comment/${id}`,
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
-          alert('댓글 수정 완료!')
-          window.location.reload();
-        },error(error, status, request) {
-                alert(error['responseText']);
-            }
+            alert('댓글 수정 완료!')
+            showComment(post_id);
+        }, error(error, status, request) {
+            alert(error['responseText']);
+        }
 
-      });
+    });
+
+
 }

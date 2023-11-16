@@ -13,6 +13,10 @@ body {
 #commentarea {
     width: 100%;
 }
+#addBtn{
+    position: relative;
+    left: 80%;
+}
 
 .input_comment {
     width: 100%;
@@ -36,10 +40,9 @@ body {
 .edit_textarea {
     width: 100%;
 }
-
-.writer {
-    margin-left: 10px;
-    margin-right: 20px;
+.createdAt{
+    position: absolute;
+    right: 20px;
 }
 
 .mycards {
