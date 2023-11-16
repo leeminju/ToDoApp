@@ -29,13 +29,12 @@ public class TodoService {
     }
 
     public Map<String, List<TodoResponseDto>> getTodoList() {
-        List<User> users = userRepository.findAllByOrderByUsername();//이름순으로 가져옴
+        List<User> users = userRepository.findAll();
 
-        Map<String, List<TodoResponseDto>> map = new TreeMap<>();//TreeMap -  key값 오름차순 정렬을 위해서
-
+        Map<String, List<TodoResponseDto>> map = new TreeMap<>();//TreeMap -  key값 오름차순 정렬(이름순)을 위해서
 
         for (User user : users) {
-            List<Todo> todoList = user.getTodoList();
+            List<Todo> todoList = todoRepository.findByUserOrderByCreatedAtDesc(user);//작성일 기준 내림차순으로 정렬
             List<TodoResponseDto> responseDtoList = new ArrayList<>();
 
             for (Todo todo : todoList) {
