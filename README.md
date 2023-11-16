@@ -12,11 +12,12 @@
    https://documenter.getpostman.com/view/30859314/2s9YXo2Kvb  
     
 **ERD 작성**
+  https://www.erdcloud.com/d/FSLx8mZbgzq532WXr
     
--![todoList ERD](https://github.com/leeminju/ToDoApp/assets/19209147/c9ff681b-e6fe-4967-b849-8ea14a4944cd)
+![todoList ERD](https://github.com/leeminju/ToDoApp/assets/19209147/c9ff681b-e6fe-4967-b849-8ea14a4944cd)
 
 
-    https://www.erdcloud.com/d/FSLx8mZbgzq532WXr
+  
     
 
 # 과제 설명
