@@ -32,8 +32,9 @@ public class Todo extends Timestamped {
     @JoinColumn(name = "username", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "todo")
-    private List<Comment> comment=new ArrayList<>();
+    //게시글 삭제되면 댓글도 같이 삭제
+    @OneToMany(mappedBy = "todo", cascade = CascadeType.REMOVE)
+    private List<Comment> comment = new ArrayList<>();
 
     public Todo(TodoRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
