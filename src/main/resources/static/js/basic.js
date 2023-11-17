@@ -1,8 +1,15 @@
 const host = 'http://' + window.location.host;
-let targetId;
 let login_user;
 
+// 화면 시작하자마자
 $(document).ready(function () {
+
+    authorizationCheck();//인가
+    addMemberCard();//멤버 카드 추가
+})
+
+// 인가 : 토큰 유효성 판단
+function authorizationCheck() {
     const auth = getToken();
 
     if (auth !== undefined && auth !== '') {
@@ -14,6 +21,7 @@ $(document).ready(function () {
         return;
     }
 
+    //로그인한 회원 정보
     $.ajax({
         type: 'GET',
         url: `/api/user-info`,
@@ -34,10 +42,7 @@ $(document).ready(function () {
         .fail(function (jqXHR, textStatus) {
             logout();
         });
-
-    addMemberCard();
-})
-
+}
 function logout() {
     // 토큰 삭제
     Cookies.remove('Authorization', {path: '/'});
@@ -54,33 +59,7 @@ function getToken() {
     return auth;
 }
 
-
-function saveTodo(value) {
-    let title = $('#' + value + '-title').val();
-    let contents = $('#' + value + '-contents').val().replace("\r\b", "<br>");
-
-
-    let data = {
-        'title': title,
-        'contents': contents
-    };
-
-    $.ajax({
-            type: 'POST',
-            url: '/api/post',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function (response) {
-                alert('할일이 추가되었습니다.');
-                window.location.reload();
-            },
-            error(error, status, request) {
-                alert(error['responseText']);
-            }
-        }
-    );
-}
-
+//멤버 카드 추가
 function addMemberCard() {
     $.ajax({
         type: 'GET',
@@ -106,18 +85,21 @@ function addMemberCard() {
                          <div class="mb-3">
                          <textarea class="form-control" id="${username}-contents" placeholder="내용" rows="2"></textarea>
                         </div>
-                        <button id="addBtn" class="btn btn-primary"  value="${username}" onclick="saveTodo(this.value)">추가</button>
+                        <button id="addBtn" class="btn btn-primary"  onclick="saveTodo('${username}')">추가</button>
                    </div>              
-                    <button id="${username}-add_btn" style="border: transparent" value="${username}" onclick="toggle_control(this.value)">+ Add TO DO</button>                 
+                    <button id="${username}-add_btn" style="border: transparent" onclick="toggle_control('${username}')">+ Add TO DO</button>                 
                 </div></div>`;
 
                 $('#card').append(temp);
 
-                if (login_user !== username) {
+                if (login_user != username) {
+                    console.log(login_user);
+                    console.log(username);
                     let btn_id = '#' + username + '-add_btn';
                     $(btn_id).attr("disabled", true);
                 }
-                addTodoList(username, todolist);
+
+                addTodoList(username, todolist);//멤버별 todoList 추가
             }
         },
         error(error, status, request) {
@@ -126,12 +108,7 @@ function addMemberCard() {
     });
 }
 
-function toggle_control(value) {
-    let box_id = '#' + value + '-box';
-    $(box_id).toggle();
-}
-
-
+//멤버별 할일 추가
 function addTodoList(username, todolist) {
     let list_name = "#" + username + "-list";
     $(list_name).empty();
@@ -151,7 +128,7 @@ function addTodoList(username, todolist) {
         } else {
             tempHtml = `<li class="list-group-item" onclick="showDetails(${id})" 
                     data-bs-toggle="modal" data-bs-target="#TodoModal"
-                    style="text-decoration-line: line-through">${title}</li>`;
+                    style="text-decoration-line: line-through">${title}</li>`;//완료된 할일
         }
 
         $(list_name).append(tempHtml);
@@ -159,6 +136,40 @@ function addTodoList(username, todolist) {
 }
 
 
+//할일 저장
+function saveTodo(username) {
+    let title = $('#' + username + '-title').val();
+    let contents = $('#' + username + '-contents').val().replace("\r\b", "<br>");//textarea에서 엔터-> <br>로 변환
+
+    let data = {
+        'title': title,
+        'contents': contents
+    };
+
+    $.ajax({
+            type: 'POST',
+            url: '/api/post',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                console.log(response);
+                alert('할일이 추가되었습니다.');
+                window.location.reload();
+            },
+            error(error, status, request) {
+                alert(error['responseText']);
+            }
+        }
+    );
+}
+
+//할일 작성 부분 열었다 닫았다하기
+function toggle_control(username) {
+    let box_id = '#' + username + '-box';
+    $(box_id).toggle();
+}
+
+//할일 카드 세부 내용 출력 - Todo 제목 클릭 시
 function showDetails(id) {
     $.ajax({
         type: 'GET',
@@ -177,10 +188,10 @@ function showDetails(id) {
             $('#response_title').text(title);
             $('#response_contents').text(contents);
             $('#response_username').text(username);
-            $('#response_modifiedAt').text(createdAt);
+            $('#response_createdAt').text(createdAt);
 
-            $('#delete_btn').val(id);
-            $('#update_btn').val(id);
+            $('#delete_btn').val(id);// deleteTodo() 실행 시 value 값 가져옴!
+            $('#update_btn').val(id);// updateTodo updateFinished 시 value값 가져옴
 
             $('#edit_title').val(title);
             $('#edit_contents').val(contents);
@@ -192,6 +203,7 @@ function showDetails(id) {
     showComment(id);
 }
 
+//할일 업데이트(Save 버튼 클릭 시)
 function updateTodo() {
     let id = $('#update_btn').val();
 
@@ -218,7 +230,7 @@ function updateTodo() {
         }
     );
 }
-
+//할일 삭제(삭제 버튼 클릭)
 function deleteTodo() {
     let id = $('#delete_btn').val();
 
@@ -237,11 +249,12 @@ function deleteTodo() {
     );
 }
 
+//modal 내 close 버튼 클릭 시 새로고침
 function win_reload() {
     window.location.reload();
 }
-
-function updatefinished() {
+//체크박스 클릭시
+function updateFinished() {
     let id = $('#update_btn').val();
     let finished = $('#finished').is(":checked");
 
@@ -259,6 +272,7 @@ function updatefinished() {
     );
 }
 
+//댓글 생성
 function create_Comment() {
 
     let id = $('#delete_btn').val();
@@ -282,7 +296,7 @@ function create_Comment() {
         }
     );
 }
-
+//할 일내 댓글 조회
 function showComment(id) {
     $.ajax({
         type: 'GET',
@@ -328,6 +342,7 @@ function showComment(id) {
     })
 }
 
+//편집 버튼 누르면 -> 편집 공간 display
 function editComment(id) {
     showEdits(id);
 }
@@ -341,6 +356,7 @@ function showEdits(id) {
     $(`#${id}-edit`).hide();
 }
 
+//댓글 삭제
 function delete_Comment(id, post_id) {
     //삭제 API 호출
 
@@ -359,6 +375,7 @@ function delete_Comment(id, post_id) {
 
 }
 
+//댓글 수정 제출
 function submitEdit(id, post_id) {
 
     let contents = $(`#${id}-textarea`).val().replaceAll("<br>", "\r\n");
