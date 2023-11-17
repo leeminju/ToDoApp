@@ -51,9 +51,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
         }
 
-
         return userService.signup(requestDto);
-
     }
 
     // 회원 관련 정보 받기
