@@ -20,7 +20,7 @@
 # 과제 설명
 # 시연 영상
 
-https://youtu.be/Oy8WAXJbofs
+[![Video Label](https://github.com/leeminju/ToDoApp/assets/19209147/b7cb7dbe-59dc-43d5-a867-97c55e948183)](https://www.youtube.com/embed/Oy8WAXJbofs)
 
 # 기능 설명
 **1. 회원가입 기능**<br>
