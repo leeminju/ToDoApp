@@ -32,8 +32,4 @@ public class User {
         this.todoList = new ArrayList<>();
     }
 
-    public void addTodoList(Todo todo) {
-        this.todoList.add(todo);
-        todo.setUser(this); // 외래 키(연관 관계) 설정
-    }
 }
