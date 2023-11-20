@@ -18,7 +18,7 @@
 # 과제 설명
 # 시연 영상
 
-https://youtu.be/phL-Xortga4
+https://youtu.be/Oy8WAXJbofs
 
 # 기능 설명
 **1. 회원가입 기능**<br>
