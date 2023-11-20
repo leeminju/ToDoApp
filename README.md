@@ -4,7 +4,8 @@
 # **Notification: 과제 시작 전**
 
 ## Use Case Diagram
-![todoapp.drawio.png](..%2F..%2F..%2Ftodoapp.drawio.png)
+![todoapp drawio](https://github.com/leeminju/ToDoApp/assets/19209147/1a799051-5579-4fe1-b4bf-d9351be27b36)
+
     https://app.diagrams.net/#G1bg7ykj9f64yG5d-_or3VhkATJu7O0A9v
 ## API 명세서
 - https://documenter.getpostman.com/view/30859314/2s9YXpTxXk
@@ -13,7 +14,8 @@
   https://www.erdcloud.com/d/FSLx8mZbgzq532WXr 
 ![todoList ERD](https://github.com/leeminju/ToDoApp/assets/19209147/c9ff681b-e6fe-4967-b849-8ea14a4944cd)
 - 실제 ERD
-![실제 Diagram.PNG](..%2F..%2F..%2F%EC%8B%A4%EC%A0%9C%20Diagram.PNG)
+![실제 Diagram](https://github.com/leeminju/ToDoApp/assets/19209147/5eac8c8c-c690-4c9f-9ba9-7275be1d5447)
+
 
 # 과제 설명
 # 시연 영상
