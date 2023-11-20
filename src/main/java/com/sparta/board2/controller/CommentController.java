@@ -2,12 +2,15 @@ package com.sparta.board2.controller;
 
 import com.sparta.board2.dto.CommentRequestDto;
 import com.sparta.board2.dto.CommentResponseDto;
-import com.sparta.board2.dto.TodoRequestDto;
 import com.sparta.board2.security.UserDetailsImpl;
 import com.sparta.board2.service.CommentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +23,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/{post_id}")
-    public CommentResponseDto createComment(@PathVariable Long post_id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> createComment(@PathVariable Long post_id, @RequestBody @Valid CommentRequestDto requestDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // Validation 예외처리
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        if (!fieldErrors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용을 입력해주세요!!");
+        }
+
         return commentService.createComment(post_id, requestDto, userDetails.getUser());
     }
 
@@ -30,7 +39,13 @@ public class CommentController {
     }
 
     @PutMapping("/{comment_id}")
-    public ResponseEntity<?> updateComment(@PathVariable Long comment_id, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<?> updateComment(@PathVariable Long comment_id, @RequestBody @Valid CommentRequestDto requestDto, BindingResult bindingResult, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // Validation 예외처리
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        if (!fieldErrors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("내용을 입력해주세요!!");
+        }
+
         return commentService.updateComment(comment_id, requestDto, userDetails.getUser());
     }
 

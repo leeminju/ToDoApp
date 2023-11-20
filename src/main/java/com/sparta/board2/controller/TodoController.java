@@ -28,7 +28,7 @@ public class TodoController {
     @PostMapping("/post")
     public ResponseEntity<?> createTodo(@RequestBody @Valid TodoRequestDto requestDto,
                                         BindingResult bindingResult,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails ) {
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if (fieldErrors.size() > 0) {
@@ -55,14 +55,25 @@ public class TodoController {
 
     @PutMapping("/post/{id}")
     public ResponseEntity<?> updateTodo(@PathVariable Long id,
-                                        @RequestBody TodoRequestDto requestDto,
+                                        @RequestBody @Valid TodoRequestDto requestDto,
+                                        BindingResult bindingResult,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        // Validation 예외처리
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+         if (fieldErrors.size() > 0) {
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목과 내용을 모두 입력해 주세요!");
+        }
+
         return todoService.updateTodo(id, requestDto, userDetails.getUser());
     }
 
     @DeleteMapping("/post/{id}")
     public ResponseEntity<?> deleteTodo(@PathVariable Long id,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         return todoService.deleteTodo(id, userDetails.getUser());
     }
 

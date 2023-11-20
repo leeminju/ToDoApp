@@ -23,7 +23,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final TodoRepository todoRepository;
 
-    public CommentResponseDto createComment(Long post_id, CommentRequestDto requestDto, User user) {
+    public ResponseEntity<CommentResponseDto> createComment(Long post_id, CommentRequestDto requestDto, User user) {
         Todo todo = todoRepository.findById(post_id).orElseThrow(
                 () -> new NullPointerException("존재하지 않습니다")
         );
@@ -31,7 +31,7 @@ public class CommentService {
         Comment comment = commentRepository.save(new Comment(requestDto, user, todo));
         System.out.println("ABC");
 
-        return new CommentResponseDto(comment);
+        return ResponseEntity.status(HttpStatus.OK).body(new CommentResponseDto(comment));
     }
 
     public List<CommentResponseDto> getComments(Long post_id) {
