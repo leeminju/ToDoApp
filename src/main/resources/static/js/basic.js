@@ -169,7 +169,7 @@ function toggle_control(username) {
     $(box_id).toggle();
 }
 
-//할일 카드 세부 내용 출력 - Todo 제목 클릭 시
+//할일 카드 세부 내용 출력
 function showDetails(id) {
     $.ajax({
         type: 'GET',
