@@ -4,15 +4,9 @@ import com.sparta.board2.dto.SignupRequestDto;
 import com.sparta.board2.entity.User;
 import com.sparta.board2.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 @Service
@@ -21,9 +15,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private MessageSource messageSource;
 
-    public void signup(SignupRequestDto requestDto) {
+    public String signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -35,7 +28,9 @@ public class UserService {
 
         // 사용자 등록
         User user = new User(username, password);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        return savedUser.getUsername();
     }
 
 }
