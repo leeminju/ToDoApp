@@ -1,11 +1,14 @@
 package com.sparta.board2.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.board2.jwt.JwtUtil;
+import com.sparta.board2.response.CustomResponseEntity;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,15 +23,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Slf4j(topic = "JWT 검증 및 인가")
+@RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
+    private final ObjectMapper objectMapper;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
@@ -39,11 +40,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
             if (!jwtUtil.validateToken(tokenValue)) {
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                res.setCharacterEncoding("UTF-8");//한글 깨짐 방지
-                res.setContentType("text/html; charset=UTF-8");//한글 깨짐 방지
-                PrintWriter printWriter = res.getWriter();
-                printWriter.println("토큰이 유효하지 않습니다. " + res.getStatus());
-                log.error("Token Error");
+                res.setContentType("application/json; charset=UTF-8");
+                CustomResponseEntity customResponseEntity = new CustomResponseEntity("토큰이 유효하지 않습니다",HttpStatus.BAD_REQUEST.value());
+                res.getWriter().write(objectMapper.writeValueAsString(customResponseEntity));
                 return;
             }
 

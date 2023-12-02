@@ -1,9 +1,12 @@
 package com.sparta.board2.controller;
 
+import com.sparta.board2.dto.LoginRequestDto;
 import com.sparta.board2.dto.SignupRequestDto;
+import com.sparta.board2.jwt.JwtUtil;
 import com.sparta.board2.response.CustomResponseEntity;
 import com.sparta.board2.security.UserDetailsImpl;
 import com.sparta.board2.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping("/user/login-page")
     public String loginPage() {
@@ -37,11 +41,11 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.CREATED).
                 body(
-                new CustomResponseEntity(
-                        "회원 가입 성공",
-                        HttpStatus.CREATED.value()
-                )
-        );
+                        new CustomResponseEntity(
+                                "회원 가입 성공",
+                                HttpStatus.CREATED.value()
+                        )
+                );
     }
 
     // 회원 관련 정보 받기
@@ -49,5 +53,14 @@ public class UserController {
     @ResponseBody
     public String getUsername(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userDetails.getUser().getUsername();
+    }
+
+    @PostMapping("/user/login")
+    public ResponseEntity<CustomResponseEntity> login(@RequestBody LoginRequestDto userRequestDto, HttpServletResponse response) {
+        userService.login(userRequestDto);
+
+        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(userRequestDto.getUsername()));
+
+        return ResponseEntity.ok().body(new CustomResponseEntity("로그인 성공", HttpStatus.OK.value()));
     }
 }
