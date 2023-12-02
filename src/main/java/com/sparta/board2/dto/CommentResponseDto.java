@@ -1,11 +1,16 @@
 package com.sparta.board2.dto;
 
 import com.sparta.board2.entity.Comment;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentResponseDto {
     private Long id;
     private String contents;
