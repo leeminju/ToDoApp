@@ -21,11 +21,10 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public ResponseEntity<TodoResponseDto> createTodo(TodoRequestDto requestDto, User user) {
+    public TodoResponseDto createTodo(TodoRequestDto requestDto, User user) {
         Todo todo = todoRepository.save(new Todo(requestDto, user));
         todo.setUser(user);
-
-        return ResponseEntity.status(HttpStatus.OK).body(new TodoResponseDto(todo));
+        return new TodoResponseDto(todo);
     }
 
     public Map<String, List<TodoResponseDto>> getTodoList() {
@@ -48,49 +47,48 @@ public class TodoService {
 
     public TodoResponseDto getTodoById(Long id) {
         Todo todo = todoRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("존재하지 않습니다")
+                () -> new NullPointerException("할일이 존재하지 않습니다")
         );
         return new TodoResponseDto(todo);
     }
 
     @Transactional
-    public ResponseEntity<?> updateTodo(Long id, TodoRequestDto requestDto, User user) {
+    public TodoResponseDto updateTodo(Long id, TodoRequestDto requestDto, User user) {
         Todo todo = todoRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("존재하지 않습니다")
+                () -> new NullPointerException("할일이 존재하지 않습니다")
         );
 
         if (!todo.getUser().getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("작성자만 수정할 수 있습니다.");
+            throw new IllegalStateException("작성자만 수정할 수 있습니다.");
         }
 
         todo.update(requestDto);
-        return ResponseEntity.status(HttpStatus.OK).body(new TodoResponseDto(todo));
+        return new TodoResponseDto(todo);
     }
 
-    public ResponseEntity<?> deleteTodo(Long id, User user) {
+    public void deleteTodo(Long id, User user) {
         Todo todo = todoRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("존재하지 않습니다")
         );
 
         if (!todo.getUser().getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("작성자만 삭제할 수 있습니다.");
+            throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
         }
 
         todoRepository.delete(todo);
-        return ResponseEntity.status(HttpStatus.OK).body("삭제 성공");
     }
 
     @Transactional
-    public ResponseEntity<?> updatefinished(Long id, boolean finished, User user) {
+    public boolean updateFinished(Long id, boolean finished, User user) {
         Todo todo = todoRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("존재하지 않습니다")
+                () -> new NullPointerException("할일이 존재하지 않습니다")
         );
         if (!todo.getUser().getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("작성자만 수정할 수 있습니다.");
+            throw new IllegalStateException("작성자만 완료/취소할 수 있습니다.");
         }
 
         todo.setFinished(finished);
-        return ResponseEntity.status(HttpStatus.OK).body("완료 여부" + finished + "로 변경");
+        return todo.isFinished();
     }
 
 

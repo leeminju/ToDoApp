@@ -27,20 +27,11 @@
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
-                        alert(response);
+                        alert(response['responseMessage']);
                         window.location.href='/api/user/login-page';
                     },
                     error(error, status, request) {
-                        let state= error['status'];
-                        let message = error['responseJSON']
-
-                        let str="";
-                        for(i=0;i<message.length;i++){
-                            str += message[i] +"\n";
-                        }
-                        str += state
-                        alert(str);
-
+                        alert(error['responseJSON']['errorMessage']);
                     }
                 }
             );

@@ -11,8 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TodoRequestDto {
-    @NotBlank
+    @NotBlank(message = "할일 제목은 공백일 수 없습니다.")
     String title;
-    @NotBlank
+    @NotBlank(message = "할일 내용은 공백일 수 없습니다.")
     String contents;
 }

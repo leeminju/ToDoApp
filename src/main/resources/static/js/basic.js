@@ -43,6 +43,7 @@ function authorizationCheck() {
             logout();
         });
 }
+
 function logout() {
     // 토큰 삭제
     Cookies.remove('Authorization', {path: '/'});
@@ -93,8 +94,6 @@ function addMemberCard() {
                 $('#card').append(temp);
 
                 if (login_user != username) {
-                    console.log(login_user);
-                    console.log(username);
                     let btn_id = '#' + username + '-add_btn';
                     $(btn_id).attr("disabled", true);
                 }
@@ -152,12 +151,11 @@ function saveTodo(username) {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                console.log(response);
-                alert('할일이 추가되었습니다.');
+                alert(response['responseMessage']);
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseText']);
+                alert(error['responseJSON']['errorMessage']);
             }
         }
     );
@@ -180,7 +178,6 @@ function showDetails(id) {
             let username = response['username'];
             let contents = response['contents'];
             let createdAt = response['createdAt'];
-            //let modifiedAt = response['modifiedAt'];
             var finished = response['finished'];
 
             contents = contents.replaceAll("<br>", "\r\n");
@@ -221,15 +218,16 @@ function updateTodo() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert('성공적으로 수정되었습니다.');
+                alert(response['responseMessage']);
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseText']);
+                alert(error['responseJSON']['errorMessage']);
             }
         }
     );
 }
+
 //할일 삭제(삭제 버튼 클릭)
 function deleteTodo() {
     let id = $('#delete_btn').val();
@@ -239,11 +237,11 @@ function deleteTodo() {
             url: `/api/post/${id}`,
             contentType: 'application/json',
             success: function (response) {
-                alert('할일이 삭제되었습니다.');
+                alert(response['responseMessage']);
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseText']);
+                alert(error['responseJSON']['errorMessage']);
             }
         }
     );
@@ -253,6 +251,7 @@ function deleteTodo() {
 function win_reload() {
     window.location.reload();
 }
+
 //체크박스 클릭시
 function updateFinished() {
     let id = $('#update_btn').val();
@@ -263,9 +262,10 @@ function updateFinished() {
             url: `/api/post/${id}/${finished}`,
             contentType: 'application/json',
             success: function (response) {
+                alert(response['responseMessage']);
             },
             error(error, status, request) {
-                alert(error['responseText']);
+                alert(error['responseJSON']['errorMessage']);
                 $('#finished').prop("checked", !finished);
             }
         }
@@ -274,33 +274,33 @@ function updateFinished() {
 
 //댓글 생성
 function create_Comment() {
-
-    let id = $('#delete_btn').val();
-
+    let post_id = $('#delete_btn').val();
     let contents = $('#comment_text').val().replace("\r\b", "<br>");
 
     let data = {"contents": contents};
 
     $.ajax({
             type: 'POST',
-            url: `/api/comment/${id}`,
+            url: `/api/post/${post_id}/comment`,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
-                alert("댓글이 작성되었습니다.");
-                showComment(id);
+                alert(response['responseMessage']);
+                showComment(post_id);
             },
             error(error, status, request) {
-                alert(error['responseText']);
+                console.log(error);
+                alert(error['responseJSON']['errorMessage']);
             }
         }
     );
 }
+
 //할 일내 댓글 조회
-function showComment(id) {
+function showComment(post_id) {
     $.ajax({
         type: 'GET',
-        url: `/api/comment/${id}`,
+        url: `/api/post/${post_id}/comments`,
         success: function (response) {
             $('#comment-card').empty();
 
@@ -330,8 +330,8 @@ function showComment(id) {
                                     </div>
                                     <div class="footer">
                                             <img id="${comment_id}-edit" class="icon-start-edit" src="images/edit.png" alt="" onclick="editComment('${comment_id}')">
-                                            <img id="${comment_id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="delete_Comment('${comment_id}','${id}')">
-                                            <img id="${comment_id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${comment_id}','${id}')">
+                                            <img id="${comment_id}-delete" class="icon-delete" src="images/delete.png" alt="" onclick="delete_Comment('${comment_id}','${post_id}')">
+                                            <img id="${comment_id}-submit" class="icon-end-edit" src="images/done.png" alt="" onclick="submitEdit('${comment_id}','${post_id}')">
                                     </div>
                                 </div>
                             </div>`;
@@ -359,16 +359,15 @@ function showEdits(id) {
 //댓글 삭제
 function delete_Comment(id, post_id) {
     //삭제 API 호출
-
     $.ajax({
         type: "DELETE",
         url: `/api/comment/${id}`,
         contentType: "application/json",
         success: function (response) {
-            alert('댓글 삭제 완료!')
+            alert(response['responseMessage']);
             showComment(post_id);
         }, error(error, status, request) {
-            alert(error['responseText']);
+            alert(error['responseJSON']['errorMessage']);
         }
 
     });
@@ -388,10 +387,10 @@ function submitEdit(id, post_id) {
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {
-            alert('댓글 수정 완료!')
+            alert(response['responseMessage']);
             showComment(post_id);
         }, error(error, status, request) {
-            alert(error['responseText']);
+            alert(error['responseJSON']['errorMessage']);
         }
 
     });

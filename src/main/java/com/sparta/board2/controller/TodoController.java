@@ -2,6 +2,7 @@ package com.sparta.board2.controller;
 
 import com.sparta.board2.dto.TodoRequestDto;
 import com.sparta.board2.dto.TodoResponseDto;
+import com.sparta.board2.response.CustomResponseEntity;
 import com.sparta.board2.security.UserDetailsImpl;
 import com.sparta.board2.service.TodoService;
 import jakarta.validation.Valid;
@@ -10,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,20 +25,15 @@ public class TodoController {
     private final TodoService todoService;
 
     @PostMapping("/post")
-    public ResponseEntity<?> createTodo(@RequestBody @Valid TodoRequestDto requestDto,
-                                        BindingResult bindingResult,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if (fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목과 내용을 모두 입력해 주세요!");
-        }
-
-        return todoService.createTodo(requestDto, userDetails.getUser());
+    public ResponseEntity<CustomResponseEntity> createTodo(@RequestBody @Valid TodoRequestDto requestDto,
+                                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        todoService.createTodo(requestDto, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new CustomResponseEntity(
+                        "할일 추가 성공",
+                        HttpStatus.CREATED.value()
+                )
+        );
     }
 
 
@@ -54,33 +48,49 @@ public class TodoController {
     }
 
     @PutMapping("/post/{id}")
-    public ResponseEntity<?> updateTodo(@PathVariable Long id,
+    public ResponseEntity<CustomResponseEntity> updateTodo(@PathVariable Long id,
                                         @RequestBody @Valid TodoRequestDto requestDto,
-                                        BindingResult bindingResult,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        // Validation 예외처리
-        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-         if (fieldErrors.size() > 0) {
-            for (FieldError fieldError : bindingResult.getFieldErrors()) {
-                log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("제목과 내용을 모두 입력해 주세요!");
-        }
-
-        return todoService.updateTodo(id, requestDto, userDetails.getUser());
+        todoService.updateTodo(id, requestDto, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new CustomResponseEntity(
+                        "할일 수정 완료",
+                        HttpStatus.OK.value()
+                )
+        );
     }
 
     @DeleteMapping("/post/{id}")
-    public ResponseEntity<?> deleteTodo(@PathVariable Long id,
+    public ResponseEntity<CustomResponseEntity> deleteTodo(@PathVariable Long id,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
-
-        return todoService.deleteTodo(id, userDetails.getUser());
+        todoService.deleteTodo(id, userDetails.getUser());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new CustomResponseEntity(
+                        "할일 삭제 완료",
+                        HttpStatus.OK.value()
+                )
+        );
     }
 
     @PutMapping("/post/{id}/{finished}")
-    public ResponseEntity<?> updatefinished(@PathVariable Long id,
+    public ResponseEntity<CustomResponseEntity> updateFinished(@PathVariable Long id,
                                             @PathVariable boolean finished,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return todoService.updatefinished(id, finished, userDetails.getUser());
+        boolean updatedFinished = todoService.updateFinished(id, finished, userDetails.getUser());
+        if (updatedFinished) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CustomResponseEntity(
+                            "할일이 완료 처리 되었습니다",
+                            HttpStatus.OK.value()
+                    )
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new CustomResponseEntity(
+                            "할일이 완료 취소 되었습니다.",
+                            HttpStatus.OK.value()
+                    )
+            );
+        }
     }
 }
