@@ -1,11 +1,15 @@
 package com.sparta.board2.dto;
 
 import com.sparta.board2.entity.Todo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class TodoResponseDto {
     private Long id;
     private String title;

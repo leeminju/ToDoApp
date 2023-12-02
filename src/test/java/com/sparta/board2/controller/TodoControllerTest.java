@@ -2,11 +2,11 @@ package com.sparta.board2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.board2.config.WebSecurityConfig;
-import com.sparta.board2.dto.CommentRequestDto;
-import com.sparta.board2.dto.CommentResponseDto;
+import com.sparta.board2.dto.TodoRequestDto;
+import com.sparta.board2.dto.TodoResponseDto;
 import com.sparta.board2.entity.User;
 import com.sparta.board2.security.UserDetailsImpl;
-import com.sparta.board2.service.CommentService;
+import com.sparta.board2.service.TodoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,9 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -37,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("test")
 @WebMvcTest(
-        controllers = {CommentController.class},
+        controllers = {TodoController.class},
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
@@ -45,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 )
         }
 )
-class CommentControllerTest {
+class TodoControllerTest {
     private MockMvc mvc;
     private User testUser;
     private Principal mockPrincipal;
@@ -57,7 +55,7 @@ class CommentControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    CommentService commentService;
+    TodoService todoService;
 
 
     @BeforeEach
@@ -81,17 +79,16 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 등록")
-    void createCommentTest() throws Exception {
+    @DisplayName("할일 등록")
+    void createTodoTest() throws Exception {
         // given
-        CommentRequestDto requestDto = new CommentRequestDto("댓글 생성");
+        TodoRequestDto requestDto = new TodoRequestDto("할일 제목", "할일 내용");
 
-
-        String commentInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
+        String todoInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(post("/api/post/{post_id}/comment", 1)
-                        .content(commentInfo)
+        mvc.perform(post("/api/post")
+                        .content(todoInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -100,17 +97,17 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 조회")
-    void getCommentTest() throws Exception {
+    @DisplayName("할일 조회")
+    void getTodoByIdTest() throws Exception {
         // given
         Date date = new Date();
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 
-        given(commentService.getComment(1L))
-                .willReturn(new CommentResponseDto(1L, "댓글 내용!!", testUser.getUsername(), localDateTime, localDateTime));
+        given(todoService.getTodoById(1L))
+                .willReturn(new TodoResponseDto(1L, "할일 제목", testUser.getUsername(), "할일 내용", localDateTime.minusHours(1), localDateTime, false));
 
         // when - then
-        mvc.perform(get("/api/comment/{comment_id}", 1)
+        mvc.perform(get("/api/post/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -119,21 +116,50 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 전체 조회")
-    void getCommentsTest() throws Exception {
+    @DisplayName("할일 전체 조회")
+    void getTodoListTest() throws Exception {
         // given
         Date date = new Date();
         LocalDateTime localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        List<CommentResponseDto> commentResponseDtos = new ArrayList<>();
-        commentResponseDtos.add(new CommentResponseDto(1L, "내용 1", "user1", localDateTime.minusHours(3), localDateTime.minusMinutes(1)));
-        commentResponseDtos.add(new CommentResponseDto(2L, "내용 2", "user2", localDateTime.minusMinutes(50), localDateTime.minusMinutes(2)));
-        commentResponseDtos.add(new CommentResponseDto(3L, "내용 3", "user1", localDateTime.minusMinutes(10), localDateTime.minusMinutes(3)));
+        Map<String, List<TodoResponseDto>> map = new TreeMap<>();
+        User user1 = new User("user1", "password");
+        User user2 = new User("user2", "password");
 
-        given(commentService.getComments(1L))
-                .willReturn(commentResponseDtos);
+        List<TodoResponseDto> user1TodoList = new ArrayList<>();
+        user1TodoList.addAll(List.of(new TodoResponseDto[]{
+                new TodoResponseDto(1L, "user1 할일 제목 1", user1.getUsername(), "내용1", localDateTime.minusHours(2), localDateTime.minusMinutes(10), false),
+                new TodoResponseDto(3L, "user1 할일 제목 2", user1.getUsername(), "내용2", localDateTime.minusHours(1), localDateTime.minusMinutes(4), true)}
+        ));
+
+        List<TodoResponseDto> user2TodoList = new ArrayList<>();
+        user2TodoList.addAll(List.of(new TodoResponseDto[]{
+                new TodoResponseDto(2L, "user2 할일 제목 1", user1.getUsername(), "내용2", localDateTime.minusHours(1).minusMinutes(10), localDateTime.minusMinutes(30), true),
+                new TodoResponseDto(4L, "user2 할일 제목 2", user1.getUsername(), "내용2", localDateTime.minusMinutes(40), localDateTime.minusMinutes(10), false)}
+        ));
+        map.put(user1.getUsername(), user1TodoList);
+        map.put(user2.getUsername(), user2TodoList);
+
+        given(todoService.getTodoList()).willReturn(map);
 
         // when - then
-        mvc.perform(get("/api/post/{post_id}/comments", 1)
+        mvc.perform(get("/api/posts")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .principal(mockPrincipal)
+        ).andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("할일 수정")
+    void updateTodoTest() throws Exception {
+        // given
+        TodoRequestDto requestDto = new TodoRequestDto("할일 제목", "할일 수정");
+
+        String todoInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
+
+        // when - then
+        mvc.perform(put("/api/post/{id}", 1)
+                        .content(todoInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -142,16 +168,15 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 수정")
-    void updateCommentTest() throws Exception {
+    @DisplayName("할일 완료 처리")
+    void updateFisishedTest() throws Exception {
         // given
-        CommentRequestDto requestDto = new CommentRequestDto("댓글 수정");
-
-        String commentInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
+        boolean finished = true;
+        given(todoService.updateFinished(1L, finished, testUser))
+                .willReturn(finished);
 
         // when - then
-        mvc.perform(put("/api/comment/{comment_id}", 1)
-                        .content(commentInfo)
+        mvc.perform(put("/api/post/{id}/{finished}", 1, finished)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -160,16 +185,34 @@ class CommentControllerTest {
     }
 
     @Test
-    @DisplayName("댓글 삭제")
-    void deleteCommentTest() throws Exception {
+    @DisplayName("할일 완료 취소 처리")
+    void updateUnfinsishedTest() throws Exception {
         // given
+        boolean finished = false;
+        given(todoService.updateFinished(1L, finished, testUser))
+                .willReturn(finished);
 
         // when - then
-        mvc.perform(delete("/api/comment/{comment_id}", 1)
+        mvc.perform(put("/api/post/{id}/{finished}", 1, finished)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
                 )
                 .andExpect(status().isOk());
     }
+
+    @Test
+    @DisplayName("할일 삭제")
+    void deleteTodoTest() throws Exception {
+        // given
+
+        // when - then
+        mvc.perform(delete("/api/post/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .principal(mockPrincipal)
+                )
+                .andExpect(status().isOk());
+    }
+
 }
