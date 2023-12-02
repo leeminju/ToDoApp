@@ -8,8 +8,6 @@ import com.sparta.board2.entity.User;
 import com.sparta.board2.repository.CommentRepository;
 import com.sparta.board2.repository.TodoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +75,7 @@ public class CommentService {
         );
 
         if (!comment.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalStateException("댓글 작성자만 수정할 수 있습니다.");
+            throw new IllegalStateException("댓글 작성자만 삭제할 수 있습니다.");
         }
 
         commentRepository.delete(comment);
