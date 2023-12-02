@@ -68,7 +68,7 @@ public class TodoService {
 
     public void deleteTodo(Long id, User user) {
         Todo todo = todoRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("존재하지 않습니다")
+                () -> new NullPointerException("할일이 존재하지 않습니다")
         );
 
         if (!todo.getUser().getUsername().equals(user.getUsername())) {
