@@ -34,15 +34,17 @@ public class UserService {
         return savedUser.getUsername();
     }
 
-    public void login(LoginRequestDto loginRequestDto) {
-		String username = loginRequestDto.getUsername();
-		String password = loginRequestDto.getPassword();
+    public boolean login(LoginRequestDto loginRequestDto) {
+        String username = loginRequestDto.getUsername();
+        String password = loginRequestDto.getPassword();
 
-		User user = userRepository.findById(username)
-			.orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
+        User user = userRepository.findById(username)
+                .orElseThrow(() -> new IllegalArgumentException("등록된 회원이 없습니다."));
 
-		if(!passwordEncoder.matches(password, user.getPassword())) {
-			throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-		}
-	}
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        return true;
+    }
 }

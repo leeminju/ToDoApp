@@ -1,5 +1,6 @@
 package com.sparta.board2.service;
 
+import com.sparta.board2.dto.LoginRequestDto;
 import com.sparta.board2.dto.SignupRequestDto;
 import com.sparta.board2.entity.User;
 import com.sparta.board2.repository.UserRepository;
@@ -14,8 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -28,11 +28,13 @@ class UserServiceTest {
     PasswordEncoder passwordEncoder;
 
     SignupRequestDto signupRequestDto;
+    LoginRequestDto loginRequestDto;
 
     @BeforeEach
     void setUp() {
 
         signupRequestDto = new SignupRequestDto("user", "password");
+        loginRequestDto = new LoginRequestDto("user", "password");
     }
 
     @Test
@@ -67,4 +69,51 @@ class UserServiceTest {
         assertEquals("user", savedUsername);
     }
 
+    @Test
+    @DisplayName("로그인 테스트-등록된 회원 아님")
+    void loginTest() {
+        //given
+        UserService userService = new UserService(userRepository, passwordEncoder);
+
+        //when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.login(loginRequestDto);
+        });
+
+        //then
+        assertEquals("등록된 회원이 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("로그인 테스트-비밀번호 불일치")
+    void loginTest2() {
+        //given
+        User user = new User("user","password1");
+        given(userRepository.findById("user")).willReturn(Optional.of(user));
+        UserService userService = new UserService(userRepository, passwordEncoder);
+
+        //when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            userService.login(loginRequestDto);
+        });
+
+        //then
+        assertEquals("비밀번호가 일치하지 않습니다.", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("로그인 테스트-성공")
+    void loginTest3() {
+        //given
+        User user = new User("user","password");
+        given(userRepository.findById("user")).willReturn(Optional.of(user));
+        UserService userService = new UserService(userRepository, passwordEncoder);
+        given(passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())).willReturn(true);
+
+        //when
+        boolean result = userService.login(loginRequestDto);
+
+        //then
+        assertTrue(result);
+    }
 }
