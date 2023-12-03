@@ -5,9 +5,8 @@ import com.sparta.board2.dto.TodoResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class TodoTest {
 
@@ -16,7 +15,7 @@ class TodoTest {
     void test1() {
         //given
         User user = new User("testUser", "passwort");
-        Todo todo = new Todo(1L, "제목1", "내용1", true, user, new ArrayList<>());
+        Todo todo = new Todo(new TodoRequestDto("할일 제목", "할일 내용"), user);
         String title = "제목";
         String contents = "내용";
         TodoRequestDto todoRequestDto = new TodoRequestDto(title, contents);
@@ -34,16 +33,15 @@ class TodoTest {
     void test2() {
         //given
         User user = new User("testUser", "passwort");
-        Todo todo = new Todo(1L, "제목", "내용", true, user, new ArrayList<>());
+        Todo todo = new Todo(new TodoRequestDto("할일 제목", "할일 내용"), user);
 
         //when
         TodoResponseDto todoResponseDto = new TodoResponseDto(todo);
 
         //then
-        assertEquals(todo.getId(), todoResponseDto.getId());
         assertEquals(todo.getTitle(), todoResponseDto.getTitle());
         assertEquals(todo.getContents(), todoResponseDto.getContents());
-        assertEquals(todo.isFinished(), todoResponseDto.isFinished());
+        assertFalse(todoResponseDto.isFinished());
         assertEquals(todo.getUser().getUsername(), todoResponseDto.getUsername());
     }
 }

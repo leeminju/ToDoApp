@@ -3,6 +3,7 @@ package com.sparta.board2.entity;
 import com.sparta.board2.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "comments")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,17 @@ public class Comment extends Timestamped {
         this.user = user;
     }
 
+    public Comment(String contents, User user) {
+        this.contents = contents;
+        this.user = user;
+    }
+
     public void update(CommentRequestDto requestDto) {
         this.contents = requestDto.getContents();
+    }
+
+
+    public void addTodo(Todo todo) {
+        this.todo = todo;
     }
 }

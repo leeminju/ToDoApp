@@ -2,11 +2,11 @@ package com.sparta.board2.entity;
 
 import com.sparta.board2.dto.CommentRequestDto;
 import com.sparta.board2.dto.CommentResponseDto;
+import com.sparta.board2.dto.TodoRequestDto;
 import com.sparta.board2.dto.TodoResponseDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,7 +19,7 @@ class CommentTest {
         CommentRequestDto commentRequestDto = new CommentRequestDto("댓글 내용");
         User commentUser = new User("testuser1", "password");
         User todoUser = new User("testuser2", "password");
-        Todo todo = new Todo(1L, "할일", "할일 내용", false, todoUser, new ArrayList<>());
+        Todo todo = new Todo(new TodoRequestDto("할일 제목", "할일 내용"), todoUser);
 
         //when
         Comment comment = new Comment(commentRequestDto, commentUser, todo);
@@ -47,12 +47,11 @@ class CommentTest {
         //given
         User commentUser = new User("testuser1", "password");
         User todoUser = new User("testuser2", "password");
-        Todo todo = new Todo(1L, "할일", "할일 내용", false, todoUser, new ArrayList<>());
-        Comment comment = new Comment(1L, "댓글 내용", todo, commentUser);
+        Todo todo = new Todo(new TodoRequestDto("할일 제목", "할일 내용"), todoUser);
+        Comment comment = new Comment("댓글 내용", commentUser);
         //when
         CommentResponseDto commentResponseDto = new CommentResponseDto(comment);
         //then
-        assertEquals(comment.getId(), commentResponseDto.getId());
         assertEquals(comment.getContents(), commentResponseDto.getContents());
         assertEquals(comment.getUser().getUsername(), commentResponseDto.getUsername());
 
