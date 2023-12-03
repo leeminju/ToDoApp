@@ -72,8 +72,8 @@ class CommentControllerTest {
 
     private void mockCommentSetup() {
         // Mock 테스트 유져 생성
-        String username = "sollertia4351";
-        String password = "robbie1234";
+        String username = "minju1234";
+        String password = "Minju1234";
 
         testUser = new User(username, password);
         UserDetailsImpl testUserDetails = new UserDetailsImpl(testUser);

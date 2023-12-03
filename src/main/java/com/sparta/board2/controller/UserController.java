@@ -15,6 +15,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
+import static org.springframework.http.ResponseEntity.status;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -56,11 +60,13 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<CustomResponseEntity> login(@Valid @RequestBody LoginRequestDto userRequestDto, HttpServletResponse response) {
+    public ResponseEntity<CustomResponseEntity> login(@Valid @RequestBody LoginRequestDto userRequestDto) {
         userService.login(userRequestDto);
 
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(userRequestDto.getUsername()));
+        String token = jwtUtil.createToken(userRequestDto.getUsername());
 
-        return ResponseEntity.ok().body(new CustomResponseEntity("로그인 성공", HttpStatus.OK.value()));
+        return ResponseEntity.ok()
+                .header(JwtUtil.AUTHORIZATION_HEADER, token)
+                .body(new CustomResponseEntity("로그인 성공", HttpStatus.OK.value()));
     }
 }
