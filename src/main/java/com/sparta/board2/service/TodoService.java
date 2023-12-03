@@ -23,7 +23,7 @@ public class TodoService {
 
     public TodoResponseDto createTodo(TodoRequestDto requestDto, User user) {
         Todo todo = todoRepository.save(new Todo(requestDto, user));
-        todo.setUser(user);
+        todo.addUser(user);
         return new TodoResponseDto(todo);
     }
 
@@ -87,7 +87,7 @@ public class TodoService {
             throw new IllegalStateException("작성자만 완료/취소할 수 있습니다.");
         }
 
-        todo.setFinished(finished);
+        todo.changefinished(finished);
         return todo.isFinished();
     }
 

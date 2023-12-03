@@ -2,6 +2,7 @@ package com.sparta.board2.entity;
 
 import com.sparta.board2.dto.CommentRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "comments")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Comment extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

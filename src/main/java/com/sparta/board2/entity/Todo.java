@@ -2,18 +2,18 @@ package com.sparta.board2.entity;
 
 import com.sparta.board2.dto.TodoRequestDto;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "todolist")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Todo extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +46,13 @@ public class Todo extends Timestamped {
     public void update(TodoRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
+    }
+
+    public void addUser(User user) {
+        this.user = user;
+    }
+
+    public void changefinished(boolean finished) {
+        this.finished = finished;
     }
 }
