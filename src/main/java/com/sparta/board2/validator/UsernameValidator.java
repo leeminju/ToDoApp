@@ -18,7 +18,7 @@ public class UsernameValidator implements ConstraintValidator<Username, String> 
         if (!isValidUsername) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    MessageFormat.format("{0}자 이상의 {1}자 이하의 숫자, 영문자를 포함한 Username을 입력해주세요.",
+                    MessageFormat.format("{0}자 이상의 {1}자 이하의 숫자, 영어 소문자를 포함한 Username을 입력해주세요.",
                             MIN_SIZE,
                             MAX_SIZE)).addConstraintViolation();
         }
