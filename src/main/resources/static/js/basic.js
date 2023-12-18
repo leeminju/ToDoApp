@@ -155,7 +155,7 @@ function saveTodo(username) {
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseJSON']['errorMessage']);
+                alert(error['responseJSON']['responseMessage']);
             }
         }
     );
@@ -222,7 +222,7 @@ function updateTodo() {
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseJSON']['errorMessage']);
+                alert(error['responseJSON']['responseMessage']);
             }
         }
     );
@@ -241,7 +241,7 @@ function deleteTodo() {
                 window.location.reload();
             },
             error(error, status, request) {
-                alert(error['responseJSON']['errorMessage']);
+                alert(error['responseJSON']['responseMessage']);
             }
         }
     );
@@ -265,7 +265,7 @@ function updateFinished() {
                 alert(response['responseMessage']);
             },
             error(error, status, request) {
-                alert(error['responseJSON']['errorMessage']);
+                alert(error['responseJSON']['responseMessage']);
                 $('#finished').prop("checked", !finished);
             }
         }
@@ -290,7 +290,7 @@ function create_Comment() {
             },
             error(error, status, request) {
                 console.log(error);
-                alert(error['responseJSON']['errorMessage']);
+                alert(error['responseJSON']['responseMessage']);
             }
         }
     );
@@ -367,7 +367,7 @@ function delete_Comment(id, post_id) {
             alert(response['responseMessage']);
             showComment(post_id);
         }, error(error, status, request) {
-            alert(error['responseJSON']['errorMessage']);
+            alert(error['responseJSON']['responseMessage']);
         }
 
     });
@@ -390,7 +390,7 @@ function submitEdit(id, post_id) {
             alert(response['responseMessage']);
             showComment(post_id);
         }, error(error, status, request) {
-            alert(error['responseJSON']['errorMessage']);
+            alert(error['responseJSON']['responseMessage']);
         }
 
     });

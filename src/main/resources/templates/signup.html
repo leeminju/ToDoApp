@@ -15,7 +15,6 @@
             let username = $('#username').val();
             let password = $('#password').val();
 
-            console.log(username, password)
             let data = {
                 'username': username,
                 'password': password
@@ -31,7 +30,7 @@
                         window.location.href='/api/users/login-page';
                     },
                     error(error, status, request) {
-                        alert(error['responseJSON']['errorMessage']);
+                        alert(error['responseJSON']['responseMessage']);
                     }
                 }
             );

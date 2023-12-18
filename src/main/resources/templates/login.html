@@ -51,7 +51,7 @@
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
             error(error) {
-                let message = error['responseJSON']['errorMessage'];
+                let message = error['responseJSON']['responseMessage'];
                 $('#login-failed').css('display', 'block').html(message);
             }
         })
