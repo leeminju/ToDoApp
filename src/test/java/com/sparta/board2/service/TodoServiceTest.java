@@ -1,12 +1,13 @@
 package com.sparta.board2.service;
 
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.dto.TodoResponseDto;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.todo.TodoResponseDto;
 
-import com.sparta.board2.entity.Todo;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.repository.TodoRepository;
-import com.sparta.board2.repository.UserRepository;
+import com.sparta.board2.todo.Todo;
+import com.sparta.board2.user.User;
+import com.sparta.board2.todo.TodoRepository;
+import com.sparta.board2.user.UserRepository;
+import com.sparta.board2.todo.TodoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

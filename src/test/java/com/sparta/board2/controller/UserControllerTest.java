@@ -1,13 +1,11 @@
 package com.sparta.board2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.board2.config.WebSecurityConfig;
-import com.sparta.board2.dto.LoginRequestDto;
-import com.sparta.board2.dto.SignupRequestDto;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.jwt.JwtUtil;
-import com.sparta.board2.security.UserDetailsImpl;
-import com.sparta.board2.service.UserService;
+import com.sparta.board2.global.config.WebSecurityConfig;
+import com.sparta.board2.global.controller.HomeController;
+import com.sparta.board2.user.*;
+import com.sparta.board2.global.jwt.JwtUtil;
+import com.sparta.board2.global.security.UserDetailsImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -81,7 +79,7 @@ class UserControllerTest {
     @DisplayName("로그인 Page")
     void loginPage() throws Exception {
         // when - then
-        mvc.perform(get("/api/user/login-page"))
+        mvc.perform(get("/api/users/login-page"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));
     }
@@ -90,7 +88,7 @@ class UserControllerTest {
     @DisplayName("회원가입 Page")
     void signupPage() throws Exception {
         // when - then
-        mvc.perform(get("/api/user/signup"))
+        mvc.perform(get("/api/users/signup"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("signup"));
     }
@@ -113,7 +111,7 @@ class UserControllerTest {
         String signupInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(post("/api/user/signup")
+        mvc.perform(post("/api/users/signup")
                         .content(signupInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -132,7 +130,7 @@ class UserControllerTest {
         given(jwtUtil.createToken(username)).willReturn("Bearer Token");
 
         //when
-        mvc.perform(post("/api/user/login")
+        mvc.perform(post("/api/users/login")
                         .content(loginInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)

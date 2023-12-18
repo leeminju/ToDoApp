@@ -1,6 +1,7 @@
 package com.sparta.board2.entity;
 
-import com.sparta.board2.dto.SignupRequestDto;
+import com.sparta.board2.user.SignupRequestDto;
+import com.sparta.board2.user.User;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

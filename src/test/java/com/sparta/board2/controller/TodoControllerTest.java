@@ -1,12 +1,13 @@
 package com.sparta.board2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.board2.config.WebSecurityConfig;
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.dto.TodoResponseDto;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.security.UserDetailsImpl;
-import com.sparta.board2.service.TodoService;
+import com.sparta.board2.global.config.WebSecurityConfig;
+import com.sparta.board2.todo.TodoController;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.todo.TodoResponseDto;
+import com.sparta.board2.user.User;
+import com.sparta.board2.global.security.UserDetailsImpl;
+import com.sparta.board2.todo.TodoService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,7 +88,7 @@ class TodoControllerTest {
         String todoInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(post("/api/post")
+        mvc.perform(post("/api/posts")
                         .content(todoInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -107,7 +108,7 @@ class TodoControllerTest {
                 .willReturn(new TodoResponseDto(1L, "할일 제목", testUser.getUsername(), "할일 내용", localDateTime.minusHours(1), localDateTime, false));
 
         // when - then
-        mvc.perform(get("/api/post/{id}", 1)
+        mvc.perform(get("/api/posts/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -158,7 +159,7 @@ class TodoControllerTest {
         String todoInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(put("/api/post/{id}", 1)
+        mvc.perform(put("/api/posts/{id}", 1)
                         .content(todoInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -176,7 +177,7 @@ class TodoControllerTest {
                 .willReturn(finished);
 
         // when - then
-        mvc.perform(put("/api/post/{id}/{finished}", 1, finished)
+        mvc.perform(put("/api/posts/{id}/finished/{finished}", 1, finished)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -193,7 +194,7 @@ class TodoControllerTest {
                 .willReturn(finished);
 
         // when - then
-        mvc.perform(put("/api/post/{id}/{finished}", 1, finished)
+        mvc.perform(put("/api/posts/{id}/finished/{finished}", 1, finished)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -207,7 +208,7 @@ class TodoControllerTest {
         // given
 
         // when - then
-        mvc.perform(delete("/api/post/{id}", 1)
+        mvc.perform(delete("/api/posts/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)

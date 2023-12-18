@@ -1,9 +1,11 @@
 package com.sparta.board2.service;
 
-import com.sparta.board2.dto.LoginRequestDto;
-import com.sparta.board2.dto.SignupRequestDto;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.repository.UserRepository;
+import com.sparta.board2.global.exception.RestApiException;
+import com.sparta.board2.user.LoginRequestDto;
+import com.sparta.board2.user.SignupRequestDto;
+import com.sparta.board2.user.User;
+import com.sparta.board2.user.UserRepository;
+import com.sparta.board2.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -88,12 +90,12 @@ class UserServiceTest {
     @DisplayName("로그인 테스트-비밀번호 불일치")
     void loginTest2() {
         //given
-        User user = new User("user","password1");
+        User user = new User("user", "password1");
         given(userRepository.findById("user")).willReturn(Optional.of(user));
         UserService userService = new UserService(userRepository, passwordEncoder);
 
         //when
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        Exception exception = assertThrows(RestApiException.class, () -> {
             userService.login(loginRequestDto);
         });
 
@@ -105,7 +107,7 @@ class UserServiceTest {
     @DisplayName("로그인 테스트-성공")
     void loginTest3() {
         //given
-        User user = new User("user","password");
+        User user = new User("user", "password");
         given(userRepository.findById("user")).willReturn(Optional.of(user));
         UserService userService = new UserService(userRepository, passwordEncoder);
         given(passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())).willReturn(true);

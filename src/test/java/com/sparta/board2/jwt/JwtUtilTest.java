@@ -1,5 +1,6 @@
 package com.sparta.board2.jwt;
 
+import com.sparta.board2.global.jwt.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;

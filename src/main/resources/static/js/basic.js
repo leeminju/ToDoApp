@@ -17,7 +17,7 @@ function authorizationCheck() {
             jqXHR.setRequestHeader('Authorization', auth);
         });
     } else {
-        window.location.href = host + '/api/user/login-page';
+        window.location.href = host + '/api/users/login-page';
         return;
     }
 
@@ -31,7 +31,7 @@ function authorizationCheck() {
             const username = res;
 
             if (!username) {
-                window.location.href = '/api/user/login-page';
+                window.location.href = '/api/users/login-page';
                 return;
             }
 
@@ -147,7 +147,7 @@ function saveTodo(username) {
 
     $.ajax({
             type: 'POST',
-            url: '/api/post',
+            url: '/api/posts',
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
@@ -171,7 +171,7 @@ function toggle_control(username) {
 function showDetails(id) {
     $.ajax({
         type: 'GET',
-        url: `/api/post/${id}`,
+        url: `/api/posts/${id}`,
         success: function (response) {
             let id = response['id'];
             let title = response['title'];
@@ -214,7 +214,7 @@ function updateTodo() {
 
     $.ajax({
             type: 'PUT',
-            url: `/api/post/${id}`,
+            url: `/api/posts/${id}`,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
@@ -234,7 +234,7 @@ function deleteTodo() {
 
     $.ajax({
             type: 'DELETE',
-            url: `/api/post/${id}`,
+            url: `/api/posts/${id}`,
             contentType: 'application/json',
             success: function (response) {
                 alert(response['responseMessage']);
@@ -259,7 +259,7 @@ function updateFinished() {
 
     $.ajax({
             type: 'PUT',
-            url: `/api/post/${id}/${finished}`,
+            url: `/api/posts/${id}/finished/${finished}`,
             contentType: 'application/json',
             success: function (response) {
                 alert(response['responseMessage']);
@@ -281,7 +281,7 @@ function create_Comment() {
 
     $.ajax({
             type: 'POST',
-            url: `/api/post/${post_id}/comment`,
+            url: `/api/posts/${post_id}/comments`,
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
@@ -300,7 +300,7 @@ function create_Comment() {
 function showComment(post_id) {
     $.ajax({
         type: 'GET',
-        url: `/api/post/${post_id}/comments`,
+        url: `/api/posts/${post_id}/comments`,
         success: function (response) {
             $('#comment-card').empty();
 
@@ -361,7 +361,7 @@ function delete_Comment(id, post_id) {
     //삭제 API 호출
     $.ajax({
         type: "DELETE",
-        url: `/api/comment/${id}`,
+        url: `/api/comments/${id}`,
         contentType: "application/json",
         success: function (response) {
             alert(response['responseMessage']);
@@ -383,7 +383,7 @@ function submitEdit(id, post_id) {
 
     $.ajax({
         type: "PUT",
-        url: `/api/comment/${id}`,
+        url: `/api/comments/${id}`,
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function (response) {

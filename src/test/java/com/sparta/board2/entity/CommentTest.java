@@ -1,12 +1,13 @@
 package com.sparta.board2.entity;
 
-import com.sparta.board2.dto.CommentRequestDto;
-import com.sparta.board2.dto.CommentResponseDto;
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.dto.TodoResponseDto;
+import com.sparta.board2.comment.Comment;
+import com.sparta.board2.comment.CommentRequestDto;
+import com.sparta.board2.comment.CommentResponseDto;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.todo.Todo;
+import com.sparta.board2.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

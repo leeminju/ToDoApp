@@ -1,7 +1,9 @@
 package com.sparta.board2.entity;
 
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.dto.TodoResponseDto;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.todo.TodoResponseDto;
+import com.sparta.board2.todo.Todo;
+import com.sparta.board2.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

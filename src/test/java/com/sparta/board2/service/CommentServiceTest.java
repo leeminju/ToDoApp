@@ -1,13 +1,11 @@
 package com.sparta.board2.service;
 
-import com.sparta.board2.dto.CommentRequestDto;
-import com.sparta.board2.dto.CommentResponseDto;
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.entity.Comment;
-import com.sparta.board2.entity.Todo;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.repository.CommentRepository;
-import com.sparta.board2.repository.TodoRepository;
+import com.sparta.board2.comment.*;
+import com.sparta.board2.global.exception.RestApiException;
+import com.sparta.board2.todo.Todo;
+import com.sparta.board2.todo.TodoRepository;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,11 +61,11 @@ class CommentServiceTest {
         CommentRequestDto createRequestDto = new CommentRequestDto("test 댓글");
         CommentService commentService = new CommentService(commentRepository, todoRepository);
         //when
-        Exception exception = assertThrows(NullPointerException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.createComment(post_id, createRequestDto, loginedUser);
         });
         //then
-        assertEquals("할일이 존재하지 않습니다", exception.getMessage());
+        assertEquals("할일이 존재하지 않습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -97,11 +95,11 @@ class CommentServiceTest {
         CommentService commentService = new CommentService(commentRepository, todoRepository);
 
         //when
-        Exception exception = assertThrows(NullPointerException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.getComments(post_id);
         });
         //then
-        assertEquals("할일이 존재하지 않습니다", exception.getMessage());
+        assertEquals("할일이 존재하지 않습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -139,11 +137,11 @@ class CommentServiceTest {
         CommentService commentService = new CommentService(commentRepository, todoRepository);
 
         //when
-        Exception exception = assertThrows(NullPointerException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.getComment(comment_id);
         });
         //then
-        assertEquals("해당 댓글 존재하지 않습니다", exception.getMessage());
+        assertEquals("해당 댓글 존재하지 않습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -173,11 +171,11 @@ class CommentServiceTest {
         CommentService commentService = new CommentService(commentRepository, todoRepository);
 
         //when
-        Exception exception = assertThrows(NullPointerException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.updateComment(comment_id, updateRequestDto, loginedUser);
         });
         //then
-        assertEquals("해당 댓글 존재하지 않습니다", exception.getMessage());
+        assertEquals("해당 댓글 존재하지 않습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -190,11 +188,11 @@ class CommentServiceTest {
 
         CommentService commentService = new CommentService(commentRepository, todoRepository);
         //when
-        Exception exception = assertThrows(IllegalStateException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.updateComment(comment_id, updateRequestDto, loginedUser);
         });
         //then
-        assertEquals("댓글 작성자만 수정할 수 있습니다.", exception.getMessage());
+        assertEquals("댓글 작성자만 수정할 수 있습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -223,11 +221,11 @@ class CommentServiceTest {
         CommentService commentService = new CommentService(commentRepository, todoRepository);
 
         //when
-        Exception exception = assertThrows(NullPointerException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.deleteComment(comment_id, user);
         });
         //then
-        assertEquals("해당 댓글 존재하지 않습니다", exception.getMessage());
+        assertEquals("해당 댓글 존재하지 않습니다.", exception.getErrorMessage());
     }
 
     @Test
@@ -240,11 +238,11 @@ class CommentServiceTest {
 
         CommentService commentService = new CommentService(commentRepository, todoRepository);
         //when
-        Exception exception = assertThrows(IllegalStateException.class, () -> {
+        RestApiException exception = assertThrows(RestApiException.class, () -> {
             commentService.deleteComment(comment_id, loginedUser);
         });
         //then
-        assertEquals("댓글 작성자만 삭제할 수 있습니다.", exception.getMessage());
+        assertEquals("댓글 작성자만 삭제할 수 있습니다.", exception.getErrorMessage());
     }
 
     @Test

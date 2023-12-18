@@ -1,12 +1,13 @@
 package com.sparta.board2.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sparta.board2.config.WebSecurityConfig;
-import com.sparta.board2.dto.CommentRequestDto;
-import com.sparta.board2.dto.CommentResponseDto;
-import com.sparta.board2.entity.User;
-import com.sparta.board2.security.UserDetailsImpl;
-import com.sparta.board2.service.CommentService;
+import com.sparta.board2.comment.CommentController;
+import com.sparta.board2.comment.CommentRequestDto;
+import com.sparta.board2.comment.CommentResponseDto;
+import com.sparta.board2.comment.CommentService;
+import com.sparta.board2.global.config.WebSecurityConfig;
+import com.sparta.board2.global.security.UserDetailsImpl;
+import com.sparta.board2.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,7 +91,7 @@ class CommentControllerTest {
         String commentInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(post("/api/post/{post_id}/comment", 1)
+        mvc.perform(post("/api/posts/{postId}/comments", 1)
                         .content(commentInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -110,7 +111,7 @@ class CommentControllerTest {
                 .willReturn(new CommentResponseDto(1L, "댓글 내용!!", testUser.getUsername(), localDateTime, localDateTime));
 
         // when - then
-        mvc.perform(get("/api/comment/{comment_id}", 1)
+        mvc.perform(get("/api/comments/{commentId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -133,7 +134,7 @@ class CommentControllerTest {
                 .willReturn(commentResponseDtos);
 
         // when - then
-        mvc.perform(get("/api/post/{post_id}/comments", 1)
+        mvc.perform(get("/api/posts/{postId}/comments", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)
@@ -150,7 +151,7 @@ class CommentControllerTest {
         String commentInfo = objectMapper.writeValueAsString(requestDto);//class -> json string으로 바꾸기
 
         // when - then
-        mvc.perform(put("/api/comment/{comment_id}", 1)
+        mvc.perform(put("/api/comments/{commentId}", 1)
                         .content(commentInfo)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -165,7 +166,7 @@ class CommentControllerTest {
         // given
 
         // when - then
-        mvc.perform(delete("/api/comment/{comment_id}", 1)
+        mvc.perform(delete("/api/comments/{commentId}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .principal(mockPrincipal)

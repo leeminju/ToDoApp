@@ -1,9 +1,12 @@
 package com.sparta.board2.repository;
 
-import com.sparta.board2.dto.TodoRequestDto;
-import com.sparta.board2.entity.Comment;
-import com.sparta.board2.entity.Todo;
-import com.sparta.board2.entity.User;
+import com.sparta.board2.comment.CommentRepository;
+import com.sparta.board2.todo.TodoRequestDto;
+import com.sparta.board2.comment.Comment;
+import com.sparta.board2.todo.Todo;
+import com.sparta.board2.todo.TodoRepository;
+import com.sparta.board2.user.User;
+import com.sparta.board2.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

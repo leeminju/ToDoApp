@@ -23,12 +23,12 @@
 
             $.ajax({
                     type: 'POST',
-                    url: '/api/user/signup',
+                    url: '/api/users/signup',
                     contentType: 'application/json',
                     data: JSON.stringify(data),
                     success: function (response) {
                         alert(response['responseMessage']);
-                        window.location.href='/api/user/login-page';
+                        window.location.href='/api/users/login-page';
                     },
                     error(error, status, request) {
                         alert(error['responseJSON']['errorMessage']);

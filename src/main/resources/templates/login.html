@@ -17,7 +17,7 @@
 <div id="login-form">
     <div id="login-title">Log into TO DO LIST</div>
     <br>
-    <button id="login-id-btn" onclick="location.href='/api/user/signup'">
+    <button id="login-id-btn" onclick="location.href='/api/users/signup'">
         회원 가입하기
     </button>
     <div>
@@ -47,7 +47,7 @@
 
         $.ajax({
             type: "POST",
-            url: `/api/user/login`,
+            url: `/api/users/login`,
             contentType: "application/json",
             data: JSON.stringify({username: username, password: password}),
             error(error) {
