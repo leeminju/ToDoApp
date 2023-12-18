@@ -223,6 +223,7 @@ function updateTodo() {
             },
             error(error, status, request) {
                 alert(error['responseJSON']['responseMessage']);
+                showDetails(id);
             }
         }
     );
@@ -368,6 +369,7 @@ function delete_Comment(id, post_id) {
             showComment(post_id);
         }, error(error, status, request) {
             alert(error['responseJSON']['responseMessage']);
+            showComment(post_id);
         }
 
     });
@@ -391,6 +393,7 @@ function submitEdit(id, post_id) {
             showComment(post_id);
         }, error(error, status, request) {
             alert(error['responseJSON']['responseMessage']);
+            showComment(post_id);
         }
 
     });
